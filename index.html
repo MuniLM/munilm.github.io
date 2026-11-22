@@ -3,7 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>MuniLM XBRL Prototype Hub</title>
+  <meta name="referrer" content="no-referrer" />
+  <title>MuniLM — Interactive Municipal ACFR-to-XBRL Workstations</title>
   <link rel="icon" type="image/png" href="./assets/brand/logomark_orange.png" />
   <style>
     @font-face {
@@ -15,9 +16,11 @@
     :root {
       --muni-orange: #F05332;
       --muni-ink: #141519;
-      --muni-muted: #767A87;
+      --muni-muted: #6E7381;
       --muni-pearl: #F3F3F6;
       --muni-border: rgba(20, 21, 25, 0.08);
+      --pass-green: #0F9D58;
+      --pass-bg: rgba(15, 157, 88, 0.12);
     }
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -28,35 +31,70 @@
         radial-gradient(circle at 82% 18%, rgba(96, 165, 250, 0.10) 0%, transparent 38%);
       color: var(--muni-ink);
       min-height: 100vh;
-      padding: 36px 24px;
+      padding: 32px 22px 56px;
     }
-    .shell {
-      max-width: 1080px;
-      margin: 0 auto;
-    }
+    .shell { max-width: 1080px; margin: 0 auto; }
     .topbar {
-      background: rgba(255, 255, 255, 0.86);
+      background: rgba(255, 255, 255, 0.88);
       backdrop-filter: blur(24px);
       border: 1px solid rgba(255, 255, 255, 0.95);
       border-radius: 22px;
-      padding: 16px 24px;
+      padding: 14px 22px;
       display: flex;
       align-items: center;
       justify-content: space-between;
-      margin-bottom: 24px;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 22px;
       box-shadow: 0 12px 36px -10px rgba(20, 21, 25, 0.06);
     }
     .topbar img { height: 34px; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pill-btn {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 7px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--muni-border);
+      background: #FFF;
+      color: var(--muni-ink);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .pill-btn-orange { background: var(--muni-orange); color: #FFF; border-color: var(--muni-orange); }
+    .vault-status {
+      font-size: 12px;
+      font-weight: 800;
+      background: #141519;
+      color: #FFF;
+      padding: 6px 14px;
+      border-radius: 999px;
+    }
+    .vault-status.unlocked { background: var(--pass-bg); color: var(--pass-green); }
+    .unlock-bar {
+      background: #FFFFFF;
+      border: 1px solid rgba(240, 83, 50, 0.25);
+      border-radius: 18px;
+      padding: 14px 20px;
+      margin-bottom: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 14px;
+      flex-wrap: wrap;
+    }
+    .unlock-bar.hidden { display: none; }
     .hero {
       background: linear-gradient(125deg, #FFFFFF 55%, rgba(240, 83, 50, 0.10) 100%);
       border: 1px solid var(--muni-border);
       border-radius: 24px;
-      padding: 34px 36px;
+      padding: 32px 34px;
       display: flex;
       align-items: center;
       justify-content: space-between;
       gap: 24px;
-      margin-bottom: 24px;
+      margin-bottom: 18px;
       box-shadow: 0 14px 40px -10px rgba(20, 21, 25, 0.05);
     }
     .eyebrow {
@@ -67,9 +105,24 @@
       color: var(--muni-orange);
       margin-bottom: 8px;
     }
-    .hero h1 { font-size: 32px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
-    .hero p { font-size: 15px; color: var(--muni-muted); line-height: 1.55; max-width: 680px; }
+    .hero h1 { font-size: 31px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .hero p { font-size: 14.5px; color: var(--muni-muted); line-height: 1.58; max-width: 720px; margin-bottom: 16px; }
     .hero img { width: 64px; height: 64px; flex-shrink: 0; }
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(185px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .kpi-tile {
+      background: rgba(255,255,255,0.92);
+      border: 1px solid var(--muni-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+    }
+    .kpi-tile-lbl { font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; color: var(--muni-muted); text-transform: uppercase; margin-bottom: 4px; }
+    .kpi-tile-val { font-size: 20px; font-weight: 800; color: var(--muni-ink); margin-bottom: 2px; }
+    .kpi-tile-sub { font-size: 11.5px; color: var(--muni-muted); line-height: 1.35; }
     .grid {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -112,16 +165,65 @@
   <div class="shell">
     <header class="topbar">
       <img src="./assets/brand/logo_horizontal_black_orange.png" alt="MuniLM" />
-      <span style="font-size:12px; font-weight:800; background:#141519; color:#FFF; padding:6px 14px; border-radius:999px;">@munilm.com Protected Vault</span>
+      <div class="topbar-right">
+        <a class="pill-btn" href="./benchmark/">67-ACFR Benchmark Brief &rarr;</a>
+        <span id="portalVaultBadge" class="vault-status">Encrypted Demo Vault</span>
+        <button id="portalLockBtn" class="pill-btn" style="display:none;" onclick="lockPortalVault()">Lock Vault</button>
+      </div>
     </header>
+
+    <div id="portalUnlockBar" class="unlock-bar">
+      <div style="font-size:13px; line-height:1.45;">
+        <strong>MuniLM Encrypted Demo Vault:</strong> Enter your invite key once to unlock all 5 interactive city workstations &amp; the 67-ACFR benchmark brief in this browser.
+        <span id="portalAuthMsg" style="color:#DC2626; font-weight:700; margin-left:6px;"></span>
+      </div>
+      <form id="portalUnlockForm" style="display:flex; gap:8px; align-items:center;">
+        <input id="portalKeyInput" type="password" placeholder="Enter MuniLM invite key..." style="padding:8px 13px; border-radius:10px; border:1px solid var(--muni-border); font-family:inherit; font-size:13px; width:210px;" />
+        <button type="submit" class="pill-btn pill-btn-orange">Unlock Vault &rarr;</button>
+      </form>
+    </div>
+
     <section class="hero">
       <div>
-        <div class="eyebrow">MUNILM LABS &bull; INTERACTIVE XBRL &amp; GASB WORKSTATIONS</div>
-        <h1>ACFR-to-XBRL Human-in-the-Loop Showcases</h1>
-        <p>Zero-server interactive Inline XBRL 1.1 filings, PDF bounding-box provenance viewers, and 4-Gate GASB mathematical audit cockpits. Unlock once per browser session using your MuniLM Team Vault key or <strong>@munilm.com</strong> Google Workspace account.</p>
+        <div class="eyebrow">MUNILM XBRL ENGINE v1.0 &bull; US GRIP 2022 &amp; UMICH CLOSUP COMPATIBLE</div>
+        <h1>Municipal ACFR-to-XBRL Workstations</h1>
+        <p>Auditable conversion of heterogeneous local government Annual Comprehensive Financial Reports (PDFs) into verified W3C Inline XBRL 1.1 (<code>.ixbrl.html</code>), standalone XBRL 2.1 (<code>.xml</code>), and 16-tab University of Michigan <code>.xlsx</code> workbooks—backed by clickable PDF bounding-box provenance, closed-loop GASB math tie-outs, and calibrated 3-zone human-in-the-loop review.</p>
+        <div style="display:flex; gap:10px; flex-wrap:wrap;">
+          <a class="pill-btn pill-btn-orange" href="./milwaukee-fy2025/">Explore Flagship: City of Milwaukee FY2025 &rarr;</a>
+          <a class="pill-btn" href="./benchmark/">Read 67-ACFR Methodology &amp; Blind Exam Brief &rarr;</a>
+        </div>
       </div>
       <img src="./assets/brand/logomark_orange_white.png" alt="MuniLM" />
     </section>
+
+    <section class="kpi-strip">
+      <div class="kpi-tile">
+        <div class="kpi-tile-lbl">Evaluated Corpus</div>
+        <div class="kpi-tile-val">67 ACFRs</div>
+        <div class="kpi-tile-sub">37 dev/val + 30 sealed blind-exam PDFs</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile-lbl">Intra-Table Math (1A)</div>
+        <div class="kpi-tile-val">95.61%</div>
+        <div class="kpi-tile-sub">3,221 / 3,369 checks (92.55% unseen)</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile-lbl">Cross-Stmt Bridges (1B)</div>
+        <div class="kpi-tile-val">98.57%</div>
+        <div class="kpi-tile-sub">1,099 / 1,115 fund &harr; gov-wide ties</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile-lbl">Calibrated Auto-Tag Prec.</div>
+        <div class="kpi-tile-val">87.53%</div>
+        <div class="kpi-tile-sub">-47.8% errors &bull; 79.62% Top-5 recall</div>
+      </div>
+      <div class="kpi-tile">
+        <div class="kpi-tile-lbl">XBRL 2.1 &amp; Arelle Schema</div>
+        <div class="kpi-tile-val">0 Errors</div>
+        <div class="kpi-tile-sub">34,698 facts &bull; 100% UMich compatible</div>
+      </div>
+    </section>
+
     <section class="grid">
       
         <a class="demo-card" href="./milwaukee-fy2025/">
@@ -131,7 +233,7 @@
               <span class="meta-pill">FY2025 &bull; 203 pp.</span>
             </div>
             <h3>City of Milwaukee FY2025 ACFR</h3>
-            <p>9 / 9 Basic Financial Statements routed &bull; 113 / 114 GASB math checks verified &bull; 62 XBRL contexts &bull; Interactive PDF &harr; XBRL HITL Cockpit.</p>
+            <p>9 / 9 Basic Financial Statements routed &bull; 113 / 114 GASB math checks verified &bull; 62 XBRL contexts &bull; Interactive PDF &harr; XBRL Cockpit.</p>
           </div>
           <span class="cta">Launch HITL Workstation &rarr;</span>
         </a>
@@ -144,7 +246,7 @@
               <span class="meta-pill">FY2025 &bull; 179 pp.</span>
             </div>
             <h3>City of Boston FY2025 ACFR</h3>
-            <p>9 / 9 Basic Financial Statements routed &bull; 59 / 59 GASB math checks verified &bull; 28 XBRL contexts &bull; Interactive PDF &harr; XBRL HITL Cockpit.</p>
+            <p>9 / 9 Basic Financial Statements routed &bull; 59 / 59 GASB math checks verified &bull; 28 XBRL contexts &bull; Interactive PDF &harr; XBRL Cockpit.</p>
           </div>
           <span class="cta">Launch HITL Workstation &rarr;</span>
         </a>
@@ -157,7 +259,7 @@
               <span class="meta-pill">FY2025 &bull; 427 pp.</span>
             </div>
             <h3>City of Tampa FY2025 ACFR</h3>
-            <p>9 / 9 Basic Financial Statements routed &bull; 105 / 111 GASB math checks verified &bull; 50 XBRL contexts &bull; Interactive PDF &harr; XBRL HITL Cockpit.</p>
+            <p>9 / 9 Basic Financial Statements routed &bull; 105 / 111 GASB math checks verified &bull; 50 XBRL contexts &bull; Interactive PDF &harr; XBRL Cockpit.</p>
           </div>
           <span class="cta">Launch HITL Workstation &rarr;</span>
         </a>
@@ -170,7 +272,7 @@
               <span class="meta-pill">FY2024 &bull; 155 pp.</span>
             </div>
             <h3>Denver Water FY2024 ACFR</h3>
-            <p>3 / 3 Basic Financial Statements routed &bull; 17 / 17 GASB math checks verified &bull; 2 XBRL contexts &bull; Interactive PDF &harr; XBRL HITL Cockpit.</p>
+            <p>3 / 3 Basic Financial Statements routed &bull; 17 / 17 GASB math checks verified &bull; 2 XBRL contexts &bull; Interactive PDF &harr; XBRL Cockpit.</p>
           </div>
           <span class="cta">Launch HITL Workstation &rarr;</span>
         </a>
@@ -183,12 +285,94 @@
               <span class="meta-pill">FY2025 &bull; 40 pp.</span>
             </div>
             <h3>Alpha Park Public Library District FY2025 ACFR</h3>
-            <p>6 / 6 Basic Financial Statements routed &bull; 67 / 77 GASB math checks verified &bull; 20 XBRL contexts &bull; Interactive PDF &harr; XBRL HITL Cockpit.</p>
+            <p>6 / 6 Basic Financial Statements routed &bull; 51 / 51 Gate-1 GASB math verified &bull; Illinois Comptroller Crosswalk (26 / 26 verified) &bull; 20 XBRL contexts.</p>
           </div>
           <span class="cta">Launch HITL Workstation &rarr;</span>
         </a>
         
     </section>
   </div>
+
+  <script id="portalVaultCanary" type="application/json">{"kdf":"PBKDF2-SHA256","cipher":"AES-256-GCM","iterations":210000,"salt_b64":"FU5L6usB2qkKcHJhAO5H+g==","nonce_b64":"5AruUv7UJm91TEDD","ciphertext_b64":"qnWjTSqKW4kUE0y660fpo83JRSzqRTJugiD4FdLzN5dtrkl2YKaWsSLzndEcrIE="}</script>
+  <script>
+  (function() {
+    "use strict";
+    const VAULT_STORAGE_KEY = "munilm_team_vault_key_v1";
+    function b64ToBytes(b64) { const b = atob(b64), o = new Uint8Array(b.length); for (let i=0;i<b.length;i++) o[i]=b.charCodeAt(i); return o; }
+    async function verifyCanaryKey(pass) {
+      if (!pass || !pass.trim()) return false;
+      const env = JSON.parse(document.getElementById("portalVaultCanary").textContent);
+      if (env && env.unencrypted_canary) return true;
+      const enc = new TextEncoder();
+      const km = await crypto.subtle.importKey("raw", enc.encode(pass.trim()), {name:"PBKDF2"}, false, ["deriveKey"]);
+      const ak = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64ToBytes(env.salt_b64), iterations:env.iterations||210000, hash:"SHA-256"}, km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+      const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64ToBytes(env.nonce_b64)}, ak, b64ToBytes(env.ciphertext_b64));
+      const obj = JSON.parse(new TextDecoder("utf-8").decode(pt));
+      return Boolean(obj && obj.munilm_vault_canary === "ok_v1");
+    }
+    function setUnlockedUI(unlocked) {
+      const badge = document.getElementById("portalVaultBadge");
+      const lockBtn = document.getElementById("portalLockBtn");
+      const bar = document.getElementById("portalUnlockBar");
+      if (unlocked) {
+        badge.textContent = "✓ Vault Unlocked";
+        badge.classList.add("unlocked");
+        lockBtn.style.display = "inline-flex";
+        bar.classList.add("hidden");
+      } else {
+        badge.textContent = "Encrypted Demo Vault";
+        badge.classList.remove("unlocked");
+        lockBtn.style.display = "none";
+        bar.classList.remove("hidden");
+      }
+    }
+    window.lockPortalVault = function() {
+      localStorage.removeItem(VAULT_STORAGE_KEY);
+      setUnlockedUI(false);
+    };
+    (async function initPortalVault() {
+      const hm = (window.location.hash || "").match(/(?:^|[&#])key=([^&]+)/);
+      let hk = null;
+      if (hm) {
+        try { hk = decodeURIComponent(hm[1]).trim(); } catch(_e) { hk = String(hm[1]||"").trim(); }
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+      if (hk) {
+        try {
+          if (await verifyCanaryKey(hk)) {
+            localStorage.setItem(VAULT_STORAGE_KEY, hk);
+            setUnlockedUI(true);
+            return;
+          }
+        } catch (_e) {}
+        document.getElementById("portalAuthMsg").textContent = "Invalid invite key in URL.";
+      }
+      const saved = localStorage.getItem(VAULT_STORAGE_KEY);
+      if (saved) {
+        try {
+          if (await verifyCanaryKey(saved)) {
+            setUnlockedUI(true);
+            return;
+          }
+        } catch (_e) {}
+      }
+      setUnlockedUI(false);
+    })();
+    document.getElementById("portalUnlockForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      const val = (document.getElementById("portalKeyInput").value || "").trim();
+      const msg = document.getElementById("portalAuthMsg");
+      msg.textContent = "";
+      try {
+        if (await verifyCanaryKey(val)) {
+          localStorage.setItem(VAULT_STORAGE_KEY, val);
+          setUnlockedUI(true);
+          return;
+        }
+      } catch (_err) {}
+      msg.textContent = "Invalid invite key.";
+    });
+  })();
+  </script>
 </body>
 </html>

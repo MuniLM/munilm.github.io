@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <title>MuniLM XBRL — 67-ACFR Methodology &amp; Step 6 Benchmark Brief</title>
+  <link rel="icon" type="image/png" href="./assets/brand/logomark_orange.png" />
+  <style>
+    @font-face {
+      font-family: 'Figtree';
+      src: url('./assets/fonts/Figtree-VariableFont_wght.ttf') format('truetype');
+      font-weight: 300 900;
+      font-display: swap;
+    }
+    :root {
+      --muni-orange: #F05332;
+      --muni-ink: #141519;
+      --muni-muted: #6E7381;
+      --muni-pearl: #F3F3F6;
+      --muni-border: rgba(20, 21, 25, 0.08);
+      --pass-green: #0F9D58;
+      --pass-bg: rgba(15, 157, 88, 0.10);
+      --warn-amber: #D97706;
+      --warn-bg: rgba(217, 119, 6, 0.12);
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--muni-pearl);
+      background-image:
+        radial-gradient(circle at 18% 90%, rgba(240, 83, 50, 0.11) 0%, transparent 40%),
+        radial-gradient(circle at 84% 14%, rgba(96, 165, 250, 0.09) 0%, transparent 38%);
+      color: var(--muni-ink);
+      min-height: 100vh;
+      padding: 32px 22px 60px;
+    }
+    .shell { max-width: 1100px; margin: 0 auto; }
+    .topbar {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255,255,255,0.95);
+      border-radius: 20px;
+      padding: 14px 22px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-bottom: 22px;
+      box-shadow: 0 10px 30px -10px rgba(20,21,25,0.06);
+    }
+    .topbar img { height: 32px; }
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 800;
+      padding: 8px 14px;
+      border-radius: 999px;
+      border: 1px solid var(--muni-border);
+      background: #FFF;
+      color: var(--muni-ink);
+      text-decoration: none;
+      cursor: pointer;
+    }
+    .btn-primary { background: var(--muni-orange); color: #FFF; border-color: var(--muni-orange); }
+    .auth-gate {
+      position: fixed;
+      inset: 0;
+      background: rgba(243,243,246,0.92);
+      backdrop-filter: blur(18px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 99;
+      padding: 20px;
+    }
+    .auth-gate.hidden { display: none; }
+    .auth-card {
+      background: #FFF;
+      border: 1px solid var(--muni-border);
+      border-radius: 24px;
+      padding: 34px;
+      max-width: 440px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 22px 50px -12px rgba(20,21,25,0.12);
+    }
+    .hero {
+      background: linear-gradient(125deg, #FFFFFF 58%, rgba(240, 83, 50, 0.09) 100%);
+      border: 1px solid var(--muni-border);
+      border-radius: 24px;
+      padding: 32px 34px;
+      margin-bottom: 20px;
+    }
+    .eyebrow { font-size: 11px; font-weight: 800; letter-spacing: 0.09em; color: var(--muni-orange); text-transform: uppercase; margin-bottom: 8px; }
+    .hero h1 { font-size: 29px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 10px; }
+    .hero p { font-size: 14.5px; color: var(--muni-muted); line-height: 1.6; max-width: 880px; }
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+    .kpi {
+      background: #FFF;
+      border: 1px solid var(--muni-border);
+      border-radius: 18px;
+      padding: 18px;
+    }
+    .kpi-lbl { font-size: 10.5px; font-weight: 800; letter-spacing: 0.08em; color: var(--muni-muted); margin-bottom: 6px; }
+    .kpi-val { font-size: 24px; font-weight: 800; color: var(--muni-ink); margin-bottom: 4px; }
+    .kpi-sub { font-size: 12px; color: var(--muni-muted); line-height: 1.4; }
+    .card {
+      background: #FFF;
+      border: 1px solid var(--muni-border);
+      border-radius: 20px;
+      padding: 24px 26px;
+      margin-bottom: 20px;
+    }
+    .card h2 { font-size: 19px; font-weight: 800; margin-bottom: 14px; }
+    .layers { display: grid; grid-template-columns: repeat(auto-fit, minmax(235px, 1fr)); gap: 14px; }
+    .layer-box { border: 1px solid var(--muni-border); border-radius: 14px; padding: 16px; background: #FAFAFC; }
+    .layer-num { font-size: 11px; font-weight: 800; color: var(--muni-orange); text-transform: uppercase; margin-bottom: 4px; }
+    .layer-box h3 { font-size: 15px; font-weight: 800; margin-bottom: 6px; }
+    .layer-box p { font-size: 12.8px; color: var(--muni-muted); line-height: 1.5; }
+    .tbl-wrap { overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    th, td { padding: 10px 12px; border-bottom: 1px solid var(--muni-border); text-align: left; }
+    th { font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muni-muted); background: #F8F9FB; }
+    .pill-pass { background: var(--pass-bg); color: var(--pass-green); font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 999px; }
+    .pill-part { background: var(--warn-bg); color: var(--warn-amber); font-weight: 800; font-size: 11px; padding: 3px 9px; border-radius: 999px; }
+    ul.notes { padding-left: 18px; display: grid; gap: 8px; font-size: 13.5px; color: var(--muni-ink); line-height: 1.55; }
+  </style>
+</head>
+<body>
+  <div id="authGate" class="auth-gate">
+    <div class="auth-card">
+      <img src="./assets/brand/logo_horizontal_black_orange.png" alt="MuniLM" style="height:36px; margin-bottom:16px;" />
+      <div class="eyebrow">MuniLM Encrypted Demo Vault</div>
+      <h2 style="font-size:22px; font-weight:800; margin-bottom:8px;">Unlock Benchmark Brief</h2>
+      <p style="font-size:13.5px; color:var(--muni-muted); line-height:1.5; margin-bottom:18px;">
+        Enter your MuniLM invite key once to unlock the 67-ACFR methodology &amp; Step 6 blind-holdout report plus all 5 city workstations.
+      </p>
+      <form id="briefForm" style="display:flex; gap:8px;">
+        <input id="briefKeyInput" type="password" placeholder="Enter MuniLM invite key..." style="flex:1; padding:10px 14px; border-radius:12px; border:1px solid var(--muni-border); font-family:inherit; font-size:13.5px;" />
+        <button type="submit" class="btn btn-primary">Unlock &rarr;</button>
+      </form>
+      <div id="briefAuthMsg" style="font-size:12.5px; color:#DC2626; margin-top:10px; min-height:18px;"></div>
+    </div>
+  </div>
+
+  <div class="shell">
+    <header class="topbar">
+      <a href="../" style="display:flex; align-items:center; text-decoration:none;">
+        <img src="./assets/brand/logo_horizontal_black_orange.png" alt="MuniLM" />
+      </a>
+      <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+        <a class="btn" href="../">&larr; 5-City Interactive Portal</a>
+        <span style="font-size:11.5px; font-weight:800; background:var(--pass-bg); color:var(--pass-green); padding:6px 12px; border-radius:999px;">&check; Vault Unlocked</span>
+        <button class="btn" onclick="lockVault()">Lock Vault</button>
+      </div>
+    </header>
+    <main id="briefMain"></main>
+  </div>
+
+  <script id="encryptedBundlePayload" type="application/json">{"kdf":"PBKDF2-SHA256","cipher":"AES-256-GCM","iterations":210000,"salt_b64":"Y7Y7jRGlBIHFsjTT8ovaZg==","nonce_b64":"xV0hdQ+3Fxa2Rx6o","ciphertext_b64":"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"}</script>
+  <script>
+  (function() {
+    "use strict";
+    const VAULT_STORAGE_KEY = "munilm_team_vault_key_v1";
+    function esc(s) { const d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; }
+    function b64ToBytes(b64) { const b = atob(b64), o = new Uint8Array(b.length); for (let i=0;i<b.length;i++) o[i]=b.charCodeAt(i); return o; }
+    async function decryptEnvelope(env, pass) {
+      const enc = new TextEncoder();
+      const km = await crypto.subtle.importKey("raw", enc.encode(pass.trim()), {name:"PBKDF2"}, false, ["deriveKey"]);
+      const ak = await crypto.subtle.deriveKey({name:"PBKDF2", salt:b64ToBytes(env.salt_b64), iterations:env.iterations||210000, hash:"SHA-256"}, km, {name:"AES-GCM", length:256}, false, ["decrypt"]);
+      const pt = await crypto.subtle.decrypt({name:"AES-GCM", iv:b64ToBytes(env.nonce_b64)}, ak, b64ToBytes(env.ciphertext_b64));
+      return JSON.parse(new TextDecoder("utf-8").decode(pt));
+    }
+    function renderBrief(data) {
+      const main = document.getElementById("briefMain");
+      const kpis = (data.kpis||[]).map(k => `<div class="kpi"><div class="kpi-lbl">${esc(k.label)}</div><div class="kpi-val">${esc(k.val)}</div><div class="kpi-sub">${esc(k.sub)}</div></div>`).join("");
+      const layers = (data.layers||[]).map(l => `<div class="layer-box"><div class="layer-num">${esc(l.num)}</div><h3>${esc(l.name)}</h3><p>${esc(l.detail)}</p></div>`).join("");
+      const rubricRows = (data.step6_rubric||[]).map(r => {
+        const cls = String(r[5]).startsWith("PASS") ? "pill-pass" : "pill-part";
+        return `<tr><td><strong>${esc(r[0])}</strong></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td><strong>${esc(r[4])}</strong></td><td><span class="${cls}">${esc(r[5])}</span></td></tr>`;
+      }).join("");
+      const grandRows = (data.grand_table||[]).map(r => `<tr><td><strong>${esc(r[0])}</strong></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td><strong>${esc(r[3])}</strong></td><td><strong>${esc(r[4])}</strong></td></tr>`).join("");
+      const mlRows = (data.ml_table||[]).map(r => `<tr><td><strong>${esc(r[0])}</strong></td><td>${esc(r[1])}</td><td><strong>${esc(r[2])}</strong></td><td>${esc(r[3])}</td><td>${esc(r[4])}</td><td>${esc(r[5])}</td><td>${esc(r[6])}</td></tr>`).join("");
+      const notes = (data.notes||[]).map(n => `<li>${esc(n)}</li>`).join("");
+      main.innerHTML = `
+        <section class="hero">
+          <div class="eyebrow">${esc(data.eyebrow)}</div>
+          <h1>${esc(data.title)}</h1>
+          <p>${esc(data.subtitle)}</p>
+        </section>
+        <section class="kpi-grid">${kpis}</section>
+        <section class="card">
+          <h2>1. Four-Layer Hybrid ACFR-to-XBRL Architecture</h2>
+          <div class="layers">${layers}</div>
+        </section>
+        <section class="card">
+          <h2>2. Pre-Registered Step 6 Blind Holdout Exam (30 Unseen Municipal ACFRs, Frozen Commit 06995eb)</h2>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>#</th><th>Criterion</th><th>Pass Bar</th><th>Partial Floor</th><th>Verified Blind Holdout Result</th><th>Outcome</th></tr></thead>
+              <tbody>${rubricRows}</tbody>
+            </table>
+          </div>
+        </section>
+        <section class="card">
+          <h2>3. Complete 67-ACFR Grand Corpus Scorecard</h2>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Verification Gate</th><th>train_dev (27)</th><th>dev_val (10)</th><th>blind_holdout_v2 (30 Unseen)</th><th>67-ACFR Grand Total</th></tr></thead>
+              <tbody>${grandRows}</tbody>
+            </table>
+          </div>
+        </section>
+        <section class="card">
+          <h2>4. Neural Concept Mapping Progression on Unseen XBRL-US Lockbox (11 Governments, 1,289 Rows)</h2>
+          <div class="tbl-wrap">
+            <table>
+              <thead><tr><th>Milestone</th><th>Model Architecture</th><th>ZONE1 Precision</th><th>Pure Neural Leaf</th><th>Confidently Wrong</th><th>Auto Coverage</th><th>ZONE3 Top-5 Recall</th></tr></thead>
+              <tbody>${mlRows}</tbody>
+            </table>
+          </div>
+        </section>
+        <section class="card">
+          <h2>5. Key Empirical &amp; Governance Notes</h2>
+          <ul class="notes">${notes}</ul>
+        </section>
+      `;
+    }
+    async function tryUnlock(passkey, silent) {
+      if (!passkey) return false;
+      try {
+        const env = JSON.parse(document.getElementById("encryptedBundlePayload").textContent);
+        const data = env.unencrypted_brief ? env.unencrypted_brief : await decryptEnvelope(env, passkey);
+        localStorage.setItem(VAULT_STORAGE_KEY, passkey.trim());
+        document.getElementById("authGate").classList.add("hidden");
+        renderBrief(data);
+        return true;
+      } catch (_e) {
+        if (!silent) document.getElementById("briefAuthMsg").textContent = "Invalid invite key. Please check your MuniLM demo invite link.";
+        return false;
+      }
+    }
+    window.lockVault = function() { localStorage.removeItem(VAULT_STORAGE_KEY); location.reload(); };
+    (async function init() {
+      const hm = (window.location.hash || "").match(/(?:^|[&#])key=([^&]+)/);
+      let hk = null;
+      if (hm) {
+        try { hk = decodeURIComponent(hm[1]).trim(); } catch(_e) { hk = String(hm[1]||"").trim(); }
+        history.replaceState(null, "", window.location.pathname + window.location.search);
+      }
+      const env = JSON.parse(document.getElementById("encryptedBundlePayload").textContent);
+      if (env && env.unencrypted_brief) {
+        document.getElementById("authGate").classList.add("hidden");
+        renderBrief(env.unencrypted_brief);
+        return;
+      }
+      if (hk && (await tryUnlock(hk, false))) return;
+      const saved = localStorage.getItem(VAULT_STORAGE_KEY);
+      if (saved && (await tryUnlock(saved, true))) return;
+      document.getElementById("briefForm").addEventListener("submit", async function(e) {
+        e.preventDefault();
+        await tryUnlock(document.getElementById("briefKeyInput").value, false);
+      });
+    })();
+  })();
+  </script>
+</body>
+</html>

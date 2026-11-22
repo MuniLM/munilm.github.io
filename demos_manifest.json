@@ -8,6 +8,10 @@
     "routed_count": 9,
     "pass_count": 113,
     "total_checks": 114,
+    "gate1_pass": 113,
+    "gate1_total": 114,
+    "gate2_verified": 0,
+    "gate2_total": 0,
     "contexts": 62
   },
   {
@@ -19,6 +23,10 @@
     "routed_count": 9,
     "pass_count": 59,
     "total_checks": 59,
+    "gate1_pass": 59,
+    "gate1_total": 59,
+    "gate2_verified": 0,
+    "gate2_total": 0,
     "contexts": 28
   },
   {
@@ -30,6 +38,10 @@
     "routed_count": 9,
     "pass_count": 105,
     "total_checks": 111,
+    "gate1_pass": 105,
+    "gate1_total": 111,
+    "gate2_verified": 0,
+    "gate2_total": 0,
     "contexts": 50
   },
   {
@@ -41,6 +53,10 @@
     "routed_count": 3,
     "pass_count": 17,
     "total_checks": 17,
+    "gate1_pass": 17,
+    "gate1_total": 17,
+    "gate2_verified": 0,
+    "gate2_total": 0,
     "contexts": 2
   },
   {
@@ -52,6 +68,10 @@
     "routed_count": 6,
     "pass_count": 67,
     "total_checks": 77,
+    "gate1_pass": 51,
+    "gate1_total": 51,
+    "gate2_verified": 26,
+    "gate2_total": 26,
     "contexts": 20
   }
 ]
