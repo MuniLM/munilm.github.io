@@ -1,0 +1,20 @@
+# Secret & credential safety guards (PUBLIC GitHub Pages repository)
+.env
+.env.*
+*.key
+*.pem
+*vault_key*
+*invite_key*
+*.unencrypted.html
+showcase_bundle.json
+
+# OS & editor artifacts
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+node_modules/
+
+# Institutional logs: track Markdown logs only, ignore binary/runtime artifacts
+logs/*
+!logs/*.md
