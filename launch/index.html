@@ -1,0 +1,3371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="referrer" content="no-referrer" />
+  <title>MuniLM Launch — Investor Readiness &amp; Roadshow</title>
+  <link rel="icon" type="image/png" href="./assets/brand/logomark_orange.png" />
+  <style>
+    @font-face {
+      font-family: 'Figtree';
+      src: url('./assets/fonts/Figtree-VariableFont_wght.ttf') format('truetype');
+      font-weight: 300 900;
+      font-display: swap;
+    }
+    :root {
+      --muni-orange: #F05332;
+      --muni-orange-soft: rgba(240, 83, 50, 0.11);
+      --muni-ink: #141519;
+      --muni-charcoal: #272A34;
+      --muni-muted: #646A7A;
+      --muni-pearl: #F3F3F6;
+      --muni-border: rgba(20, 21, 25, 0.085);
+      --muni-border-strong: rgba(20, 21, 25, 0.15);
+      --pass-green: #0F9D58;
+      --pass-bg: rgba(15, 157, 88, 0.12);
+      --warn-amber: #C66900;
+      --warn-bg: rgba(217, 119, 6, 0.13);
+      --fail-red: #DC2626;
+      --fail-bg: rgba(220, 38, 38, 0.11);
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: 'Figtree', -apple-system, BlinkMacSystemFont, sans-serif;
+      background-color: var(--muni-pearl);
+      background-image:
+        radial-gradient(circle at 14% 90%, rgba(240, 83, 50, 0.11) 0%, transparent 40%),
+        radial-gradient(circle at 86% 12%, rgba(37, 99, 235, 0.09) 0%, transparent 38%);
+      color: var(--muni-ink);
+      min-height: 100vh;
+      padding: 24px 20px 72px;
+    }
+    .shell { max-width: 1440px; margin: 0 auto; }
+    .topbar {
+      background: rgba(255, 255, 255, 0.90);
+      backdrop-filter: blur(22px);
+      border: 1px solid rgba(255, 255, 255, 0.96);
+      border-radius: 20px;
+      padding: 13px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+      box-shadow: 0 10px 30px -10px rgba(20, 21, 25, 0.06);
+    }
+    .topbar-left { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .topbar img { height: 32px; }
+    .topbar-right { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .pill-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1px solid var(--muni-border-strong);
+      background: #FFF;
+      color: var(--muni-ink);
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+    .pill-btn:hover { border-color: var(--muni-orange); color: var(--muni-orange); }
+    .pill-btn-orange {
+      background: var(--muni-orange);
+      color: #FFF;
+      border-color: var(--muni-orange);
+    }
+    .pill-btn-orange:hover { background: #D94323; color: #FFF; border-color: #D94323; }
+    .pill-btn-dark {
+      background: var(--muni-ink);
+      color: #FFF;
+      border-color: var(--muni-ink);
+    }
+    .pill-btn-dark:hover { background: var(--muni-orange); border-color: var(--muni-orange); color: #FFF; }
+    .vault-status {
+      font-size: 11.5px;
+      font-weight: 800;
+      background: var(--pass-bg);
+      color: var(--pass-green);
+      padding: 6px 13px;
+      border-radius: 999px;
+    }
+    .vault-status.locked { background: var(--muni-ink); color: #FFF; }
+
+    /* Auth Gate */
+    .auth-gate {
+      max-width: 520px;
+      margin: 56px auto;
+      background: #FFF;
+      border: 1px solid var(--muni-border);
+      border-radius: 24px;
+      padding: 34px 36px;
+      box-shadow: 0 20px 50px -15px rgba(20, 21, 25, 0.10);
+      text-align: center;
+    }
+    .auth-gate.hidden { display: none; }
+    .auth-gate h2 { font-size: 24px; font-weight: 800; margin: 12px 0 8px; }
+    .auth-gate p { font-size: 14px; color: var(--muni-muted); line-height: 1.55; margin-bottom: 20px; }
+    .auth-input {
+      width: 100%;
+      padding: 11px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--muni-border-strong);
+      font-family: inherit;
+      font-size: 14px;
+      margin-bottom: 12px;
+      outline: none;
+    }
+    .auth-input:focus { border-color: var(--muni-orange); }
+    .hidden { display: none !important; }
+
+    /* Hero + KPI Strip */
+    .hero {
+      background: linear-gradient(125deg, #FFFFFF 58%, rgba(240, 83, 50, 0.09) 100%);
+      border: 1px solid var(--muni-border);
+      border-radius: 22px;
+      padding: 22px 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      margin-bottom: 16px;
+      box-shadow: 0 12px 34px -12px rgba(20, 21, 25, 0.05);
+    }
+    .eyebrow {
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--muni-orange);
+      margin-bottom: 6px;
+    }
+    .hero h1 { font-size: 26px; font-weight: 800; letter-spacing: -0.02em; margin-bottom: 5px; }
+    .hero p { font-size: 13.5px; color: var(--muni-muted); line-height: 1.5; max-width: 780px; }
+    .hero-actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .kpi-strip {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(195px, 1fr));
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    .kpi-tile {
+      background: rgba(255, 255, 255, 0.94);
+      border: 1px solid var(--muni-border);
+      border-radius: 16px;
+      padding: 14px 16px;
+      transition: transform 0.12s ease, border-color 0.12s ease;
+    }
+    .kpi-tile.clickable { cursor: pointer; }
+    .kpi-tile.clickable:hover { transform: translateY(-2px); border-color: var(--muni-orange); }
+    .kpi-tile.active-filter { border-color: var(--muni-orange); box-shadow: 0 0 0 2px rgba(240, 83, 50, 0.16); }
+    .kpi-lbl { font-size: 10.5px; font-weight: 800; letter-spacing: 0.07em; text-transform: uppercase; color: var(--muni-muted); margin-bottom: 5px; display: flex; align-items: center; justify-content: space-between; }
+    .kpi-val { font-size: 22px; font-weight: 800; color: var(--muni-ink); margin-bottom: 3px; display: flex; align-items: baseline; gap: 8px; }
+    .kpi-sub { font-size: 11.5px; color: var(--muni-muted); line-height: 1.35; }
+    .health-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 9px;
+      border-radius: 999px;
+    }
+    .health-on-track { background: var(--pass-bg); color: var(--pass-green); }
+    .health-at-risk { background: var(--warn-bg); color: var(--warn-amber); }
+    .health-off-track { background: var(--fail-bg); color: var(--fail-red); }
+
+    /* Command Card & Controls */
+    .command-card {
+      background: #FFFFFF;
+      border: 1px solid var(--muni-border);
+      border-radius: 22px;
+      padding: 18px 20px;
+      box-shadow: 0 14px 38px -14px rgba(20, 21, 25, 0.06);
+    }
+    .toolbar-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding-bottom: 11px;
+      margin-bottom: 11px;
+      border-bottom: 1px solid var(--muni-border);
+    }
+    .toolbar-group { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; }
+    .cluster-chip {
+      font-family: inherit;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 6px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--muni-border);
+      background: #F8FAFC;
+      color: var(--muni-charcoal);
+      cursor: pointer;
+      transition: all 0.12s ease;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .cluster-chip:hover { border-color: rgba(240, 83, 50, 0.4); }
+    .cluster-chip.active {
+      background: var(--muni-ink);
+      color: #FFF;
+      border-color: var(--muni-ink);
+    }
+    .filter-pill {
+      font-family: inherit;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 5px 11px;
+      border-radius: 999px;
+      border: 1px solid var(--muni-border);
+      background: #FFF;
+      color: var(--muni-charcoal);
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+    }
+    .filter-pill.active {
+      background: var(--muni-orange-soft);
+      color: var(--muni-orange);
+      border-color: rgba(240, 83, 50, 0.45);
+      font-weight: 800;
+    }
+    .avatar-dot {
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      color: #FFF;
+      font-size: 9px;
+      font-weight: 800;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .quick-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 14px;
+    }
+    .inp, .sel {
+      font-family: inherit;
+      font-size: 12.5px;
+      padding: 7px 11px;
+      border-radius: 10px;
+      border: 1px solid var(--muni-border-strong);
+      background: #FFF;
+      color: var(--muni-ink);
+      outline: none;
+    }
+    .inp:focus, .sel:focus { border-color: var(--muni-orange); }
+
+    /* MuniLM Gantt Container & Resizable Task Column */
+    .gantt-wrap {
+      --task-col-w: 400px;
+      --meta-cols-w: 418px; /* 92 (Member) + 108 (Start) + 108 (End) + 110 (% Done) */
+      border: 1px solid var(--muni-border-strong);
+      border-radius: 16px;
+      overflow-x: auto;
+      background: #FFF;
+      position: relative;
+    }
+    .gantt-minwidth {
+      min-width: 1060px;
+      position: relative;
+    }
+    .gantt-hdr-top, .gantt-hdr-days, .gantt-sec-row, .gantt-task-row, .gantt-sub-row {
+      display: grid;
+      align-items: stretch;
+    }
+    .gantt-left-cols {
+      display: grid;
+      grid-template-columns: var(--task-col-w) 92px 108px 108px 110px;
+      align-items: center;
+      border-right: 1.5px solid var(--muni-border-strong);
+      background: inherit;
+    }
+    .gantt-cell {
+      padding: 5px 7px;
+      font-size: 11.5px;
+      border-right: 1px solid rgba(20, 21, 25, 0.055);
+      overflow: hidden;
+      min-width: 0;
+      position: relative;
+    }
+    .gantt-cell:last-child { border-right: none; }
+    .gantt-hdr-cell {
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      text-transform: uppercase;
+      color: var(--muni-muted);
+      padding: 8px 8px;
+      background: #F8FAFC;
+      white-space: nowrap;
+    }
+
+    /* Draggable Column Resizer Handle & Full-Height Rail */
+    .col-resize-grip {
+      position: absolute;
+      top: 0;
+      right: -4px;
+      bottom: 0;
+      width: 9px;
+      cursor: col-resize;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      user-select: none;
+    }
+    .col-resize-grip::after {
+      content: "";
+      width: 3px;
+      height: 16px;
+      border-left: 1px solid #94A3B8;
+      border-right: 1px solid #94A3B8;
+      transition: border-color 0.12s ease, background 0.12s ease;
+    }
+    .col-resize-grip:hover::after,
+    .gantt-wrap.resizing-col .col-resize-grip::after {
+      border-color: var(--muni-orange);
+      background: var(--muni-orange);
+    }
+    .col-resize-rail {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      left: calc(var(--task-col-w) - 3px);
+      width: 7px;
+      cursor: col-resize;
+      z-index: 18;
+      background: transparent;
+      transition: background 0.12s ease;
+    }
+    .col-resize-rail:hover,
+    .gantt-wrap.resizing-col .col-resize-rail {
+      background: rgba(240, 83, 50, 0.35);
+    }
+
+    /* Row Styles & Inline Editable Inputs */
+    .gantt-sec-row {
+      background: #F8FAFC;
+      border-top: 1px solid var(--muni-border-strong);
+      border-bottom: 1px solid var(--muni-border);
+      font-weight: 800;
+    }
+    .gantt-task-row {
+      background: #FFFFFF;
+      border-bottom: 1px solid rgba(20, 21, 25, 0.055);
+      transition: background 0.1s ease;
+    }
+    .gantt-task-row:hover { background: #F9FAFB; }
+    .gantt-sub-row {
+      background: #FCFCFD;
+      border-bottom: 1px dashed rgba(20, 21, 25, 0.055);
+    }
+    .gantt-sub-row:hover { background: #F4F6FA; }
+
+    .collapse-btn {
+      width: 18px;
+      height: 18px;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--muni-muted);
+      font-size: 10.5px;
+      font-weight: 800;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      padding: 0;
+    }
+    .collapse-btn:hover {
+      background: rgba(20, 21, 25, 0.07);
+      color: var(--muni-ink);
+    }
+
+    .inline-text-inp {
+      width: 100%;
+      min-width: 0;
+      font-family: inherit;
+      font-size: 12.5px;
+      font-weight: 700;
+      color: var(--muni-ink);
+      background: transparent;
+      border: 1px solid transparent;
+      border-radius: 6px;
+      padding: 3px 5px;
+      outline: none;
+      text-overflow: ellipsis;
+      transition: border-color 0.12s ease, background 0.12s ease;
+    }
+    .inline-text-inp:hover {
+      border-color: rgba(20, 21, 25, 0.13);
+      background: #FFF;
+    }
+    .inline-text-inp:focus {
+      border-color: var(--muni-orange);
+      background: #FFF;
+      box-shadow: 0 0 0 2px rgba(240, 83, 50, 0.12);
+    }
+    .inline-text-inp.sub {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--muni-charcoal);
+    }
+    .inline-text-inp.done-strike {
+      text-decoration: line-through;
+      color: var(--muni-muted);
+    }
+
+    .inline-member-sel {
+      width: 100%;
+      font-family: inherit;
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 4px;
+      border-radius: 7px;
+      border: 1px solid transparent;
+      background: transparent;
+      cursor: pointer;
+      outline: none;
+    }
+    .inline-member-sel:hover, .inline-member-sel:focus {
+      border-color: var(--muni-border-strong);
+      background: #FFF;
+    }
+
+    .inline-date-inp {
+      width: 100%;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 700;
+      color: var(--muni-charcoal);
+      padding: 3px 4px;
+      border-radius: 6px;
+      border: 1px solid transparent;
+      background: transparent;
+      outline: none;
+      cursor: pointer;
+    }
+    .inline-date-inp:hover, .inline-date-inp:focus {
+      border-color: var(--muni-border-strong);
+      background: #FFF;
+    }
+    .inline-date-inp.overdue {
+      color: var(--fail-red);
+      font-weight: 800;
+    }
+
+    .inline-pct-num {
+      width: 38px;
+      font-family: var(--mono);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-align: right;
+      color: var(--muni-ink);
+      padding: 2px 3px;
+      border-radius: 5px;
+      border: 1px solid transparent;
+      background: transparent;
+      outline: none;
+      -moz-appearance: textfield;
+    }
+    .inline-pct-num::-webkit-outer-spin-button,
+    .inline-pct-num::-webkit-inner-spin-button {
+      -webkit-appearance: none;
+      margin: 0;
+    }
+    .inline-pct-num:hover, .inline-pct-num:focus {
+      border-color: var(--muni-border-strong);
+      background: #FFF;
+    }
+
+    .row-icon-btn {
+      border: 1px solid rgba(20, 21, 25, 0.14);
+      background: #FFF;
+      color: var(--muni-charcoal);
+      border-radius: 5px;
+      font-size: 9.5px;
+      font-weight: 800;
+      padding: 1px 5px;
+      cursor: pointer;
+      flex-shrink: 0;
+      line-height: 1.35;
+    }
+    .row-icon-btn:hover {
+      border-color: var(--muni-orange);
+      color: var(--muni-orange);
+    }
+    .sub-del-btn {
+      opacity: 0;
+      border: none;
+      background: transparent;
+      color: var(--fail-red);
+      font-size: 11px;
+      font-weight: 800;
+      cursor: pointer;
+      padding: 0 3px;
+      transition: opacity 0.12s ease;
+    }
+    .gantt-sub-row:hover .sub-del-btn,
+    .gantt-sub-row:focus-within .sub-del-btn { opacity: 0.85; }
+    .sub-del-btn:hover { opacity: 1 !important; }
+
+    /* Gantt Timeline Track & Draggable Bubbles */
+    .gantt-track {
+      position: relative;
+      display: grid;
+      align-items: center;
+      min-height: 39px;
+      user-select: none;
+    }
+    .gantt-sub-row .gantt-track { min-height: 33px; }
+    .gantt-day-bg {
+      height: 100%;
+      border-right: 1px solid rgba(20, 21, 25, 0.04);
+    }
+    .gantt-day-bg.weekend { background: rgba(241, 245, 249, 0.68); }
+    .gantt-day-bg.week-start { border-left: 1px solid rgba(20, 21, 25, 0.11); }
+    .gantt-today-line {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 2px;
+      background: var(--muni-orange);
+      z-index: 4;
+      pointer-events: none;
+      opacity: 0.8;
+    }
+    .gantt-bubble {
+      position: absolute;
+      height: 24px;
+      border-radius: 7px;
+      z-index: 5;
+      display: flex;
+      align-items: center;
+      padding: 0 10px;
+      cursor: grab;
+      overflow: hidden;
+      box-shadow: 0 2px 6px rgba(20, 21, 25, 0.08);
+      transition: box-shadow 0.12s ease;
+    }
+    .gantt-bubble:active { cursor: grabbing; }
+    .gantt-bubble.sub {
+      height: 19px;
+      border-radius: 999px;
+      padding: 0 9px;
+    }
+    .gantt-bubble-fill {
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      pointer-events: none;
+      opacity: 0.24;
+    }
+    .gantt-bubble-lbl {
+      position: relative;
+      z-index: 1;
+      font-size: 10.5px;
+      font-weight: 800;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      pointer-events: none;
+    }
+    .gantt-grip {
+      position: absolute;
+      top: 0;
+      bottom: 0;
+      width: 8px;
+      z-index: 6;
+      cursor: ew-resize;
+      opacity: 0;
+      transition: opacity 0.12s ease;
+    }
+    .gantt-grip.left { left: 0; border-right: 2px solid rgba(20, 21, 25, 0.25); }
+    .gantt-grip.right { right: 0; border-left: 2px solid rgba(20, 21, 25, 0.25); }
+    .gantt-bubble:hover .gantt-grip { opacity: 1; background: rgba(255, 255, 255, 0.45); }
+
+    /* Progress Slider */
+    .prog-slider {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 48px;
+      height: 5px;
+      border-radius: 999px;
+      outline: none;
+      cursor: pointer;
+      flex-shrink: 0;
+    }
+    .prog-slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: #FFF;
+      border: 2px solid var(--muni-ink);
+      cursor: pointer;
+    }
+    .mono-num { font-family: var(--mono); font-size: 11px; font-weight: 700; }
+
+    /* Table View */
+    .table-wrap {
+      border: 1px solid var(--muni-border-strong);
+      border-radius: 16px;
+      overflow-x: auto;
+      background: #FFF;
+    }
+    table.muni-tbl { width: 100%; border-collapse: collapse; min-width: 920px; }
+    table.muni-tbl th {
+      text-align: left;
+      padding: 10px 12px;
+      background: #F8FAFC;
+      border-bottom: 1px solid var(--muni-border-strong);
+      font-size: 10.5px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muni-muted);
+      cursor: pointer;
+      user-select: none;
+      white-space: nowrap;
+    }
+    table.muni-tbl th:hover { color: var(--muni-orange); }
+    table.muni-tbl td {
+      padding: 8px 12px;
+      border-bottom: 1px solid rgba(20, 21, 25, 0.06);
+      font-size: 12.5px;
+      vertical-align: middle;
+    }
+    table.muni-tbl tr.tbl-row:hover { background: #F9FAFB; }
+    table.muni-tbl tr.tbl-sub-row { background: #FCFCFD; }
+
+    /* Kanban View */
+    .kanban-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(230px, 1fr));
+      gap: 12px;
+      overflow-x: auto;
+    }
+    .kanban-col {
+      background: var(--muni-pearl);
+      border: 1px solid var(--muni-border);
+      border-radius: 16px;
+      padding: 12px;
+      min-height: 360px;
+    }
+    .kanban-col.drag-over {
+      border-color: var(--muni-orange);
+      background: rgba(240, 83, 50, 0.06);
+    }
+    .kanban-card {
+      background: #FFF;
+      border: 1px solid var(--muni-border);
+      border-radius: 13px;
+      padding: 12px;
+      margin-bottom: 9px;
+      cursor: grab;
+      box-shadow: 0 3px 8px rgba(20, 21, 25, 0.04);
+      transition: transform 0.12s ease, box-shadow 0.12s ease;
+    }
+    .kanban-card:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 10px 20px rgba(20, 21, 25, 0.08);
+    }
+
+    /* Slide-Over Drawer & Modal */
+    .backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(20, 21, 25, 0.38);
+      backdrop-filter: blur(3px);
+      z-index: 90;
+      display: none;
+      align-items: center;
+      justify-content: flex-end;
+    }
+    .backdrop.open { display: flex; }
+    .drawer {
+      width: min(580px, 96vw);
+      height: 100vh;
+      background: #FFF;
+      box-shadow: -16px 0 44px rgba(20, 21, 25, 0.18);
+      padding: 24px 26px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+    .modal-center { justify-content: center; }
+    .modal-box {
+      width: min(640px, 94vw);
+      max-height: 88vh;
+      background: #FFF;
+      border-radius: 20px;
+      padding: 24px 26px;
+      overflow-y: auto;
+      box-shadow: 0 24px 60px rgba(20, 21, 25, 0.22);
+    }
+    .field-lbl {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      color: var(--muni-muted);
+      margin-bottom: 5px;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 22px;
+      background: var(--muni-ink);
+      color: #FFF;
+      padding: 10px 16px;
+      border-radius: 12px;
+      font-size: 12.5px;
+      font-weight: 700;
+      z-index: 120;
+      box-shadow: 0 10px 26px rgba(20, 21, 25, 0.22);
+      display: none;
+    }
+    .toast.show { display: block; }
+
+    @media print {
+      body { background: #FFF; padding: 0; }
+      .topbar-right, .quick-bar, .no-print { display: none !important; }
+      .shell { max-width: 100%; }
+      .gantt-wrap { overflow: visible; }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <header class="topbar">
+      <div class="topbar-left">
+        <a href="../" style="display:flex; align-items:center; text-decoration:none;" title="Back to MuniLM Prototype Workspace">
+          <img src="./assets/brand/logo_horizontal_black_orange.png" alt="MuniLM" />
+        </a>
+        <a class="pill-btn" href="../">&larr; Workspace</a>
+        <a class="pill-btn" href="../acfr-extraction/">ACFR Extraction</a>
+        <a class="pill-btn" href="../benchmark/">67-ACFR Benchmark</a>
+      </div>
+      <div class="topbar-right">
+        <span id="saveIndicator" class="pill-btn" style="cursor:default; background:#F8FAFC; font-size:11px; display:none;">Encrypted Local Sync Ready</span>
+        <span id="vaultBadge" class="vault-status locked">Encrypted Launch Vault</span>
+        <button id="lockVaultBtn" class="pill-btn" style="display:none;" onclick="window.lockLaunchVault()">Lock Vault</button>
+      </div>
+    </header>
+
+    <div id="authGate" class="auth-gate">
+      <img src="./assets/brand/logomark_orange.png" alt="MuniLM" style="width:52px; height:52px;" />
+      <h2>MuniLM Launch Vault</h2>
+      <p>Enter your MuniLM invite passphrase to decrypt the co-founder execution schedule, Gantt timeline, and spreadsheet sync tools.</p>
+      <form id="unlockForm">
+        <input id="unlockInput" type="password" class="auth-input" placeholder="Enter MuniLM invite key..." autocomplete="off" />
+        <div id="authError" style="color:var(--fail-red); font-size:12.5px; font-weight:700; margin-bottom:10px; min-height:18px;"></div>
+        <button type="submit" class="pill-btn pill-btn-orange" style="width:100%; justify-content:center; padding:11px 18px; font-size:13.5px;">Unlock MuniLM Launch &rarr;</button>
+      </form>
+    </div>
+
+    <main id="launchAppRoot" class="hidden"></main>
+  </div>
+
+  <div id="taskDrawerBackdrop" class="backdrop" onclick="if(event.target===this) window.closeTaskDrawer()">
+    <div id="taskDrawerContent" class="drawer"></div>
+  </div>
+
+  <div id="phaseModalBackdrop" class="backdrop modal-center" onclick="if(event.target===this) window.closePhaseModal()">
+    <div id="phaseModalContent" class="modal-box"></div>
+  </div>
+
+  <input id="importFileInput" type="file" accept=".json,.xlsx" class="hidden" onchange="window.handleImportFile(event)" />
+  <div id="launchToast" class="toast"></div>
+
+  <script id="encryptedBundlePayload" type="application/json">{"kdf":"PBKDF2-SHA256","cipher":"AES-256-GCM","iterations":210000,"salt_b64":"hQnpui4OqqXco3G3sUyDwQ==","nonce_b64":"//LDvLGysnH9CQ2F","ciphertext_b64":"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"}</script>
+  <script>
+(function() {
+  "use strict";
+
+  const VAULT_STORAGE_KEY = "munilm_team_vault_key_v1";
+  const LOCAL_STATE_ENC_KEY = "munilm_launch_state_enc_v1";
+  const UI_PREFS_STORAGE_KEY = "munilm_launch_ui_prefs_v1";
+  const DEFAULT_TASK_COL_WIDTH = 400;
+  const MIN_TASK_COL_WIDTH = 230;
+  const MAX_TASK_COL_WIDTH = 860;
+
+  const STATUS_LIST = ["Todo", "Doing", "Stuck", "Done"];
+  const STATUS_STYLE = {
+    "Todo":  { bg: "#FEF3C7", color: "#B45309", border: "#FCD34D" },
+    "Doing": { bg: "#DBEAFE", color: "#1D4ED8", border: "#93C5FD" },
+    "Stuck": { bg: "#FCE7F3", color: "#BE185D", border: "#F9A8D4" },
+    "Done":  { bg: "#DCFCE7", color: "#15803D", border: "#86EFAC" }
+  };
+
+  let baselineState = null;
+  let appState = null;
+  let sessionSalt = null;
+  let sessionCryptoKey = null;
+  let isUnencryptedLocal = false;
+  let saveTimer = null;
+
+  // UI View State
+  let ui = {
+    viewMode: "GANTT",         // GANTT | TABLE | KANBAN
+    zoomMode: "FULL",          // 3W | 6W | FULL
+    panOffsetDays: 0,
+    taskColWidth: DEFAULT_TASK_COL_WIDTH,
+    colorBy: "OWNER",          // OWNER | PHASE | STATUS
+    ownerFilter: "ALL",        // ALL | <member.id> | PLATE_<member.id>
+    phaseFilter: "ALL",
+    searchQuery: "",
+    collapsedSections: {},
+    collapsedTasks: {},
+    tableSortField: "start_date",
+    tableSortDir: "asc",
+    activeDrawerTaskId: null,
+    draggingKanbanTaskId: null
+  };
+
+  function loadUiPrefs() {
+    try {
+      const raw = JSON.parse(localStorage.getItem(UI_PREFS_STORAGE_KEY) || "null");
+      if (raw && typeof raw === "object") {
+        const w = Number(raw.taskColWidth);
+        if (Number.isFinite(w)) {
+          ui.taskColWidth = Math.max(MIN_TASK_COL_WIDTH, Math.min(MAX_TASK_COL_WIDTH, Math.round(w)));
+        }
+      }
+    } catch (_e) {}
+  }
+
+  function saveUiPrefs() {
+    try {
+      localStorage.setItem(UI_PREFS_STORAGE_KEY, JSON.stringify({ taskColWidth: ui.taskColWidth }));
+    } catch (_e) {}
+  }
+
+  // --- Safe DOM Escaping Helpers ---
+  function esc(v) {
+    return String(v == null ? "" : v)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+  function escAttr(v) { return esc(v); }
+  function escJs(v) {
+    return String(v == null ? "" : v)
+      .replace(/\\/g, "\\\\")
+      .replace(/'/g, "\\'")
+      .replace(/\r/g, "")
+      .replace(/\n/g, "\\n");
+  }
+
+  function showToast(msg) {
+    const el = document.getElementById("launchToast");
+    if (!el) return;
+    el.textContent = msg;
+    el.classList.add("show");
+    clearTimeout(el._tid);
+    el._tid = setTimeout(() => el.classList.remove("show"), 2600);
+  }
+
+  function deepClone(obj) {
+    return JSON.parse(JSON.stringify(obj));
+  }
+
+  // --- WebCrypto Helpers ---
+  function b64ToBytes(b64) {
+    const bin = atob(b64);
+    const out = new Uint8Array(bin.length);
+    for (let i = 0; i < bin.length; i++) out[i] = bin.charCodeAt(i);
+    return out;
+  }
+  function bytesToB64(bytes) {
+    let bin = "";
+    const chunk = 0x8000;
+    for (let i = 0; i < bytes.length; i += chunk) {
+      bin += String.fromCharCode.apply(null, bytes.subarray(i, i + chunk));
+    }
+    return btoa(bin);
+  }
+
+  async function deriveAesKey(passkey, saltBytes, iterations, usages) {
+    const enc = new TextEncoder();
+    const baseKey = await crypto.subtle.importKey(
+      "raw",
+      enc.encode(passkey.trim()),
+      { name: "PBKDF2" },
+      false,
+      ["deriveKey"]
+    );
+    return crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: saltBytes, iterations: iterations || 210000, hash: "SHA-256" },
+      baseKey,
+      { name: "AES-GCM", length: 256 },
+      false,
+      usages
+    );
+  }
+
+  async function decryptEnvelope(env, passkey) {
+    const key = await deriveAesKey(passkey, b64ToBytes(env.salt_b64), env.iterations || 210000, ["decrypt"]);
+    const pt = await crypto.subtle.decrypt(
+      { name: "AES-GCM", iv: b64ToBytes(env.nonce_b64) },
+      key,
+      b64ToBytes(env.ciphertext_b64)
+    );
+    return JSON.parse(new TextDecoder("utf-8").decode(pt));
+  }
+
+  async function initSessionEncryptionKey(passkey) {
+    sessionSalt = crypto.getRandomValues(new Uint8Array(16));
+    sessionCryptoKey = await deriveAesKey(passkey, sessionSalt, 210000, ["encrypt"]);
+  }
+
+  function scheduleSaveState(label) {
+    if (!appState) return;
+    appState.updated_at = new Date().toISOString();
+    clearTimeout(saveTimer);
+    saveTimer = setTimeout(() => persistStateNow(label), 180);
+  }
+
+  async function persistStateNow(label) {
+    const ind = document.getElementById("saveIndicator");
+    try {
+      const payloadBytes = new TextEncoder().encode(JSON.stringify(appState));
+      if (isUnencryptedLocal || !sessionCryptoKey) {
+        localStorage.setItem(LOCAL_STATE_ENC_KEY, JSON.stringify({ unencrypted_local: appState }));
+      } else {
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const ct = await crypto.subtle.encrypt({ name: "AES-GCM", iv }, sessionCryptoKey, payloadBytes);
+        const env = {
+          kdf: "PBKDF2-SHA256",
+          cipher: "AES-256-GCM",
+          iterations: 210000,
+          salt_b64: bytesToB64(sessionSalt),
+          nonce_b64: bytesToB64(iv),
+          ciphertext_b64: bytesToB64(new Uint8Array(ct))
+        };
+        localStorage.setItem(LOCAL_STATE_ENC_KEY, JSON.stringify(env));
+      }
+      if (ind) {
+        const t = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+        ind.style.display = "inline-flex";
+        ind.textContent = "✓ Saved (AES-GCM) • " + t;
+      }
+      if (label) showToast(label);
+    } catch (_e) {
+      if (ind) ind.textContent = "Save warning";
+    }
+  }
+
+  // --- Date & Task/Subtask Normalization ---
+  function todayIsoStr() {
+    const now = new Date();
+    const y = now.getFullYear();
+    const m = String(now.getMonth() + 1).padStart(2, "0");
+    const d = String(now.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  function parseIsoDate(iso) {
+    if (!iso || typeof iso !== "string" || iso.length < 10) return null;
+    const p = iso.slice(0, 10).split("-").map(Number);
+    if (p.length !== 3 || isNaN(p[0]) || isNaN(p[1]) || isNaN(p[2])) return null;
+    return new Date(p[0], p[1] - 1, p[2], 12, 0, 0);
+  }
+
+  function formatIsoDate(dt) {
+    const y = dt.getFullYear();
+    const m = String(dt.getMonth() + 1).padStart(2, "0");
+    const d = String(dt.getDate()).padStart(2, "0");
+    return `${y}-${m}-${d}`;
+  }
+
+  function addDaysIso(iso, deltaDays) {
+    const base = parseIsoDate(iso) || parseIsoDate(todayIsoStr());
+    base.setDate(base.getDate() + deltaDays);
+    return formatIsoDate(base);
+  }
+
+  function diffCalendarDays(startIso, endIso) {
+    const s = parseIsoDate(startIso);
+    const e = parseIsoDate(endIso);
+    if (!s || !e) return 0;
+    return Math.round((e - s) / 86400000);
+  }
+
+  function countWorkDays(startIso, endIso) {
+    let s = parseIsoDate(startIso);
+    let e = parseIsoDate(endIso);
+    if (!s || !e) return 1;
+    if (e < s) { const tmp = s; s = e; e = tmp; }
+    let count = 0;
+    const cur = new Date(s.getTime());
+    while (cur <= e) {
+      const dow = cur.getDay();
+      if (dow !== 0 && dow !== 6) count++;
+      cur.setDate(cur.getDate() + 1);
+    }
+    return Math.max(1, count);
+  }
+
+  function normalizeSubtask(st, parentTask) {
+    if (!st.owner) st.owner = parentTask ? parentTask.owner : "both";
+    if (!st.start_date) st.start_date = parentTask ? parentTask.start_date : todayIsoStr();
+    if (!st.end_date || st.end_date < st.start_date) {
+      st.end_date = parentTask && parentTask.end_date >= st.start_date ? parentTask.end_date : st.start_date;
+    }
+    let sp = Number(st.progress_pct);
+    if (!Number.isFinite(sp)) {
+      sp = st.done ? 100 : 0;
+    }
+    sp = Math.max(0, Math.min(100, Math.round(sp)));
+    st.progress_pct = sp;
+    st.done = sp >= 100;
+    return st;
+  }
+
+  function normalizeTask(t) {
+    if (!t.start_date) t.start_date = todayIsoStr();
+    if (!t.end_date || t.end_date < t.start_date) t.end_date = t.start_date;
+    if (!STATUS_LIST.includes(t.status)) t.status = "Todo";
+    let pct = Number(t.progress_pct);
+    if (!Number.isFinite(pct)) pct = 0;
+    pct = Math.max(0, Math.min(100, Math.round(pct)));
+    if (t.status === "Done") pct = 100;
+    t.progress_pct = pct;
+    t.priority = Math.max(1, Math.min(5, Math.round(Number(t.priority) || 3)));
+    if (!Array.isArray(t.subtasks)) t.subtasks = [];
+    t.subtasks.forEach(st => normalizeSubtask(st, t));
+    if (!Array.isArray(t.links)) t.links = [];
+    return t;
+  }
+
+  function computeTaskMetrics(t, todayIso) {
+    normalizeTask(t);
+    const pct = t.status === "Done" ? 100 : t.progress_pct;
+    const isDone = t.status === "Done" || pct >= 100;
+    const isStuck = !isDone && t.status === "Stuck";
+    const isOverdue = !isDone && Boolean(t.end_date && t.end_date < todayIso);
+    return { pct, isDone, isStuck, isOverdue };
+  }
+
+  function computeDerivedHealth(tasksList, todayIso) {
+    let stuck = 0;
+    let overdue = 0;
+    for (const t of tasksList) {
+      const m = computeTaskMetrics(t, todayIso);
+      if (m.isStuck) stuck++;
+      if (m.isOverdue) overdue++;
+    }
+    if (stuck === 0 && overdue === 0) return { label: "On Track", cls: "health-on-track", stuck, overdue };
+    if (stuck >= 2 || overdue >= 2 || (stuck >= 1 && overdue >= 1)) {
+      return { label: "Off Track", cls: "health-off-track", stuck, overdue };
+    }
+    return { label: "At Risk", cls: "health-at-risk", stuck, overdue };
+  }
+
+  function getMember(ownerId) {
+    const list = (appState && appState.team_members) || [];
+    const found = list.find(m => m.id === ownerId);
+    if (found) return found;
+    return list[0] || { id: "unassigned", name: String(ownerId || "Team"), full_name: String(ownerId || "Team"), initials: "TM", color: "#64748B", bg: "#F1F5F9" };
+  }
+
+  function getSection(secId) {
+    const list = (appState && appState.sections) || [];
+    return list.find(s => s.id === secId) || list[0] || { id: "default", code: "PHASE", title: "General", color: "#475569", bg: "#F1F5F9" };
+  }
+
+  function taskMatchesFilters(t) {
+    if (ui.phaseFilter !== "ALL" && t.section_id !== ui.phaseFilter) return false;
+    if (ui.ownerFilter !== "ALL") {
+      if (ui.ownerFilter.startsWith("PLATE_")) {
+        const targetId = ui.ownerFilter.slice(6);
+        const subMatch = (t.subtasks || []).some(s => s.owner === targetId || s.owner === "both");
+        if (t.owner !== targetId && t.owner !== "both" && !subMatch) return false;
+      } else {
+        const subExact = (t.subtasks || []).some(s => s.owner === ui.ownerFilter);
+        if (t.owner !== ui.ownerFilter && !subExact) return false;
+      }
+    }
+    if (ui.searchQuery.trim()) {
+      const q = ui.searchQuery.trim().toLowerCase();
+      const sec = getSection(t.section_id);
+      const mem = getMember(t.owner);
+      const subText = (t.subtasks || []).map(s => s.title).join(" ");
+      const hay = `${t.title} ${t.deliverable || ""} ${sec.title} ${mem.name} ${subText}`.toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }
+
+  // --- Timeline Window Builder ---
+  function buildTimelineDays(filteredTasks) {
+    const todayIso = todayIsoStr();
+    let startDt;
+    let totalDays;
+
+    if (ui.zoomMode === "FULL") {
+      const pool = filteredTasks.length ? filteredTasks : (appState.tasks || []);
+      let minIso = appState.anchor_start || todayIso;
+      let maxIso = appState.target_close || addDaysIso(todayIso, 42);
+      if (pool.length) {
+        minIso = pool.reduce((acc, t) => (t.start_date < acc ? t.start_date : acc), pool[0].start_date);
+        maxIso = pool.reduce((acc, t) => (t.end_date > acc ? t.end_date : acc), pool[0].end_date);
+      }
+      startDt = parseIsoDate(addDaysIso(minIso, -2 + ui.panOffsetDays));
+      const endDt = parseIsoDate(addDaysIso(maxIso, 4 + ui.panOffsetDays));
+      totalDays = Math.max(21, Math.min(140, Math.round((endDt - startDt) / 86400000) + 1));
+    } else {
+      totalDays = ui.zoomMode === "6W" ? 42 : 21;
+      startDt = parseIsoDate(addDaysIso(todayIso, -3 + ui.panOffsetDays));
+    }
+
+    const days = [];
+    for (let i = 0; i < totalDays; i++) {
+      const d = new Date(startDt.getTime());
+      d.setDate(startDt.getDate() + i);
+      const iso = formatIsoDate(d);
+      const dow = d.getDay();
+      days.push({
+        idx: i,
+        iso,
+        dayNum: d.getDate(),
+        monthShort: d.toLocaleDateString("en-US", { month: "short" }),
+        weekdayNarrow: ["Su", "M", "T", "W", "Th", "F", "Sa"][dow],
+        isToday: iso === todayIso,
+        isWeekend: dow === 0 || dow === 6,
+        isMonday: dow === 1 || i === 0
+      });
+    }
+
+    const weeks = [];
+    let curWeek = null;
+    days.forEach((d, idx) => {
+      if (!curWeek || (d.isMonday && idx > 0)) {
+        curWeek = { label: `WEEK ${weeks.length + 1} (${d.monthShort} ${d.dayNum})`, span: 0 };
+        weeks.push(curWeek);
+      }
+      curWeek.span++;
+    });
+
+    window._launchTimelineDays = days;
+    return { days, weeks, totalDays };
+  }
+
+  function computeBarGeom(startIso, endIso, days) {
+    const total = days.length;
+    const winStart = parseIsoDate(days[0].iso);
+    const s = parseIsoDate(startIso) || winStart;
+    const e = parseIsoDate(endIso) || s;
+    const rawStart = Math.round((s - winStart) / 86400000);
+    const rawEnd = Math.round((e - winStart) / 86400000);
+    const outLeft = rawEnd < 0;
+    const outRight = rawStart >= total;
+    const clampedStart = Math.max(0, Math.min(total - 1, rawStart));
+    const clampedEnd = Math.max(clampedStart, Math.min(total - 1, rawEnd));
+    const leftPct = (clampedStart / total) * 100;
+    const widthPct = Math.max(100 / total, ((clampedEnd - clampedStart + 1) / total) * 100);
+    return { leftPct, widthPct, clampedStart, clampedEnd, outLeft, outRight };
+  }
+
+  function resolveBarPalette(task, sec, mem) {
+    if (ui.colorBy === "PHASE") {
+      return { bg: sec.bg || "#FFEDD5", border: sec.color || "#F05332", text: sec.color || "#F05332" };
+    }
+    if (ui.colorBy === "STATUS") {
+      const st = STATUS_STYLE[task.status] || STATUS_STYLE.Todo;
+      return { bg: st.bg, border: st.color, text: st.color };
+    }
+    return { bg: mem.bg || "rgba(240,83,50,0.12)", border: mem.color || "#F05332", text: mem.color || "#F05332" };
+  }
+
+  // --- Main Render ---
+  function renderApp() {
+    if (!appState) return;
+    const root = document.getElementById("launchAppRoot");
+    if (!root) return;
+
+    const todayIso = todayIsoStr();
+    const twoWeeksIso = addDaysIso(todayIso, 14);
+    const allTasks = appState.tasks || [];
+    const filteredTasks = allTasks.filter(taskMatchesFilters);
+
+    let pctSum = 0;
+    let doneCount = 0;
+    let activeDoingCount = 0;
+    let dueNext14Count = 0;
+    let starredCount = 0;
+    let totalSubtasks = 0;
+    let doneSubtasks = 0;
+
+    for (const t of allTasks) {
+      const m = computeTaskMetrics(t, todayIso);
+      pctSum += m.pct;
+      if (m.isDone) doneCount++;
+      else {
+        if (t.status === "Doing") activeDoingCount++;
+        if (t.end_date >= todayIso && t.end_date <= twoWeeksIso) dueNext14Count++;
+      }
+      if (t.starred) starredCount++;
+      for (const st of (t.subtasks || [])) {
+        totalSubtasks++;
+        if (st.progress_pct >= 100 || st.done) doneSubtasks++;
+      }
+    }
+    const overallPct = allTasks.length > 0 ? Math.round(pctSum / allTasks.length) : 0;
+    const health = computeDerivedHealth(allTasks, todayIso);
+
+    const members = appState.team_members || [];
+    const memberTilesHtml = members.map(mem => {
+      const plateFilterKey = mem.id === "both" ? "both" : `PLATE_${mem.id}`;
+      const ownTasks = mem.id === "both"
+        ? allTasks.filter(t => t.owner === "both")
+        : allTasks.filter(t => t.owner === mem.id || t.owner === "both");
+      const exactCount = allTasks.filter(t => t.owner === mem.id).length;
+      const doneOwn = ownTasks.filter(t => computeTaskMetrics(t, todayIso).isDone).length;
+      const mPct = ownTasks.length > 0
+        ? Math.round(ownTasks.reduce((s, t) => s + computeTaskMetrics(t, todayIso).pct, 0) / ownTasks.length)
+        : 0;
+      const isAct = ui.ownerFilter === plateFilterKey || ui.ownerFilter === mem.id;
+      return `
+        <div class="kpi-tile clickable ${isAct ? "active-filter" : ""}"
+             onclick="window.toggleOwnerTileFilter('${escJs(plateFilterKey)}')"
+             title="Click to filter tasks on ${escAttr(mem.name)}'s plate">
+          <div class="kpi-lbl">
+            <span>${esc(mem.name)} (${esc(mem.role)})</span>
+            <span class="avatar-dot" style="background:${escAttr(mem.color)};">${esc(mem.initials)}</span>
+          </div>
+          <div class="kpi-val">
+            <span>${mPct}%</span>
+            <span style="font-size:12.5px; font-weight:700; color:var(--muni-muted);">${doneOwn}/${ownTasks.length} tasks</span>
+          </div>
+          <div class="kpi-sub">${ mem.id === "both"
+            ? `${exactCount} joint co-founder milestones`
+            : `${exactCount} direct + ${ownTasks.length - exactCount} joint ("Both") tasks`
+          }</div>
+        </div>
+      `;
+    }).join("");
+
+    root.innerHTML = `
+      <section class="hero">
+        <div>
+          <div class="eyebrow">MUNILM LAUNCH &bull; CO-FOUNDER INVESTOR READINESS &amp; ROADSHOW COMMAND</div>
+          <h1>${esc(appState.workspace_title || "MuniLM Launch")}</h1>
+          <p>${esc(appState.workspace_subtitle || "")}</p>
+        </div>
+        <div class="hero-actions no-print">
+          <button type="button" class="pill-btn pill-btn-orange" onclick="window.openTaskDrawer('')">+ New Task</button>
+          <button type="button" class="pill-btn" onclick="window.openPhaseModal()">&#9881; Customize Phases</button>
+          <button type="button" class="pill-btn pill-btn-dark" onclick="window.exportLaunchXlsx()" title="Download MuniLM Launch Excel (.xlsx) schedule">&#8681; Export Excel (.xlsx)</button>
+          <button type="button" class="pill-btn" onclick="window.exportLaunchJson()" title="Download JSON snapshot to share updates">&#8681; Export JSON</button>
+          <button type="button" class="pill-btn" onclick="document.getElementById('importFileInput').click()" title="Import a shared .json snapshot or edited .xlsx workbook">&#8679; Import (.json / .xlsx)</button>
+          <button type="button" class="pill-btn" onclick="window.print()">Print / PDF</button>
+          <button type="button" class="pill-btn" onclick="window.resetToBaseline()" title="Revert local browser edits back to compiled MuniLM baseline">&#8634; Reset</button>
+        </div>
+      </section>
+
+      <section class="kpi-strip">
+        <div class="kpi-tile clickable ${ui.ownerFilter === "ALL" && ui.phaseFilter === "ALL" ? "active-filter" : ""}"
+             onclick="window.clearAllFilters()" title="Click to show all tasks across all phases">
+          <div class="kpi-lbl">
+            <span>Launch Readiness</span>
+            <span class="health-pill ${health.cls}">${esc(health.label)}</span>
+          </div>
+          <div class="kpi-val">
+            <span>${overallPct}%</span>
+            <span style="font-size:12.5px; font-weight:700; color:var(--muni-muted);">${doneCount}/${allTasks.length} tasks</span>
+          </div>
+          <div class="kpi-sub">${doneSubtasks}/${totalSubtasks} subtasks done &bull; ${starredCount} starred</div>
+        </div>
+
+        <div class="kpi-tile">
+          <div class="kpi-lbl"><span>Active Sprint Focus</span><span>NEXT 14 DAYS</span></div>
+          <div class="kpi-val">
+            <span>${activeDoingCount}</span>
+            <span style="font-size:12.5px; font-weight:700; color:var(--muni-muted);">in progress</span>
+          </div>
+          <div class="kpi-sub"><strong>${dueNext14Count} due</strong> within 14d &bull; ${health.overdue} overdue</div>
+        </div>
+
+        ${memberTilesHtml}
+      </section>
+
+      <section class="command-card">
+        <div class="toolbar-row no-print">
+          <div class="toolbar-group">
+            <button type="button" class="cluster-chip ${ui.viewMode === "GANTT" ? "active" : ""}" onclick="window.setLaunchView('GANTT')">Gantt Timeline</button>
+            <button type="button" class="cluster-chip ${ui.viewMode === "TABLE" ? "active" : ""}" onclick="window.setLaunchView('TABLE')">Table</button>
+            <button type="button" class="cluster-chip ${ui.viewMode === "KANBAN" ? "active" : ""}" onclick="window.setLaunchView('KANBAN')">Kanban Board</button>
+            <span style="width:1px; height:20px; background:var(--muni-border-strong); margin:0 4px;"></span>
+            <input type="search" class="inp" style="width:200px; padding:5px 10px; font-size:12px;"
+                   placeholder="Search tasks, subtasks..."
+                   value="${escAttr(ui.searchQuery)}"
+                   oninput="window.onLaunchSearch(this.value)" />
+          </div>
+
+          ${ui.viewMode === "GANTT" ? `
+            <div class="toolbar-group">
+              <span style="font-size:11px; font-weight:800; color:var(--muni-muted);">Horizon:</span>
+              <button type="button" class="filter-pill ${ui.zoomMode === "3W" ? "active" : ""}" onclick="window.setGanttZoom('3W')">3 Weeks</button>
+              <button type="button" class="filter-pill ${ui.zoomMode === "6W" ? "active" : ""}" onclick="window.setGanttZoom('6W')">6 Weeks</button>
+              <button type="button" class="filter-pill ${ui.zoomMode === "FULL" ? "active" : ""}" onclick="window.setGanttZoom('FULL')">Full Roadshow</button>
+              <button type="button" class="filter-pill" onclick="window.panGantt(-7)" title="Shift timeline earlier 1 week">&larr; 1W</button>
+              <button type="button" class="filter-pill" onclick="window.panGantt(0)" title="Reset timeline anchor">Today</button>
+              <button type="button" class="filter-pill" onclick="window.panGantt(7)" title="Shift timeline later 1 week">1W &rarr;</button>
+              <select class="sel" style="padding:4px 8px; font-size:11.5px; font-weight:700;" onchange="window.setGanttColorBy(this.value)">
+                <option value="OWNER" ${ui.colorBy === "OWNER" ? "selected" : ""}>Color: Assignee</option>
+                <option value="PHASE" ${ui.colorBy === "PHASE" ? "selected" : ""}>Color: Phase</option>
+                <option value="STATUS" ${ui.colorBy === "STATUS" ? "selected" : ""}>Color: Status</option>
+              </select>
+            </div>
+          ` : ""}
+        </div>
+
+        <!-- Phase, Collapse & Assignee Filter Pills -->
+        <div class="toolbar-row no-print" style="padding-top:0;">
+          <div class="toolbar-group">
+            <span style="font-size:11px; font-weight:800; color:var(--muni-muted);">Phase:</span>
+            <button type="button" class="filter-pill ${ui.phaseFilter === "ALL" ? "active" : ""}" onclick="window.setPhaseFilter('ALL')">All (${allTasks.length})</button>
+            ${(appState.sections || []).map(sec => {
+              const cnt = allTasks.filter(t => t.section_id === sec.id).length;
+              return `<button type="button" class="filter-pill ${ui.phaseFilter === sec.id ? "active" : ""}" onclick="window.setPhaseFilter('${escJs(sec.id)}')">
+                <span style="width:8px; height:8px; border-radius:50%; background:${escAttr(sec.color)};"></span>
+                <span>${esc(sec.code)} (${cnt})</span>
+              </button>`;
+            }).join("")}
+            ${ui.viewMode !== "KANBAN" ? `
+              <span style="width:1px; height:16px; background:var(--muni-border-strong); margin:0 2px;"></span>
+              <button type="button" class="filter-pill" onclick="window.expandCollapseAllPhases(false)" title="Expand all Phase sections">&#9662; Phases</button>
+              <button type="button" class="filter-pill" onclick="window.expandCollapseAllPhases(true)" title="Collapse all Phase sections">&#9656; Phases</button>
+              <button type="button" class="filter-pill" onclick="window.expandCollapseAllTasks(false)" title="Expand subtasks under all line-item tasks">&#9662; Subtasks</button>
+              <button type="button" class="filter-pill" onclick="window.expandCollapseAllTasks(true)" title="Collapse subtasks under all line-item tasks">&#9656; Subtasks</button>
+            ` : ""}
+          </div>
+
+          <div class="toolbar-group">
+            <span style="font-size:11px; font-weight:800; color:var(--muni-muted);">Assignee:</span>
+            <button type="button" class="filter-pill ${ui.ownerFilter === "ALL" ? "active" : ""}" onclick="window.setOwnerFilter('ALL')">All</button>
+            ${members.map(m => `
+              <button type="button" class="filter-pill ${ui.ownerFilter === m.id ? "active" : ""}" onclick="window.setOwnerFilter('${escJs(m.id)}')">
+                <span class="avatar-dot" style="background:${escAttr(m.color)}; width:15px; height:15px; font-size:8px;">${esc(m.initials)}</span>
+                <span>${esc(m.name)}</span>
+              </button>
+              ${m.id !== "both" ? `
+                <button type="button" class="filter-pill ${ui.ownerFilter === "PLATE_" + m.id ? "active" : ""}" onclick="window.setOwnerFilter('PLATE_${escJs(m.id)}')" title="Includes tasks assigned to ${escAttr(m.name)} plus Joint ('Both') tasks">
+                  <span>${esc(m.name)} + Both</span>
+                </button>
+              ` : ""}
+            `).join("")}
+          </div>
+        </div>
+
+        <!-- Quick-Add Task Bar -->
+        <div class="quick-bar no-print">
+          <input id="quickTaskTitle" type="text" class="inp" style="flex:1; min-width:220px;"
+                 placeholder="+ Quick-add a MuniLM Launch or Roadshow task and press Enter..."
+                 onkeydown="if(event.key==='Enter'){ event.preventDefault(); window.quickAddTask(); }" />
+          <select id="quickTaskSec" class="sel">
+            ${(appState.sections || []).map(s => `<option value="${escAttr(s.id)}" ${ui.phaseFilter === s.id ? "selected" : ""}>${esc(s.title)}</option>`).join("")}
+          </select>
+          <select id="quickTaskOwner" class="sel">
+            ${members.map(m => `<option value="${escAttr(m.id)}">${esc(m.name)} (${esc(m.initials)})</option>`).join("")}
+          </select>
+          <input id="quickTaskStart" type="date" class="inp mono-num" value="${escAttr(todayIso)}" title="Start Date" />
+          <input id="quickTaskEnd" type="date" class="inp mono-num" value="${escAttr(addDaysIso(todayIso, 5))}" title="End Date / Deadline" />
+          <button type="button" class="pill-btn pill-btn-orange" onclick="window.quickAddTask()">+ Add Task</button>
+        </div>
+
+        ${ui.viewMode === "GANTT"
+          ? renderGanttView(filteredTasks, todayIso)
+          : (ui.viewMode === "TABLE"
+              ? renderTableView(filteredTasks, todayIso)
+              : renderKanbanView(filteredTasks, todayIso))}
+      </section>
+    `;
+  }
+
+  // --- VIEW 1: Interactive MuniLM Gantt (Resizable Column, Collapsible Tasks & Full Inline Editing) ---
+  function renderGanttView(filteredTasks, todayIso) {
+    const { days, weeks, totalDays } = buildTimelineDays(filteredTasks);
+    const minTimelinePx = Math.max(440, totalDays * (ui.zoomMode === "FULL" ? 13 : 24));
+    const gridTemplate = `calc(var(--task-col-w) + var(--meta-cols-w)) minmax(${minTimelinePx}px, 1fr)`;
+    const todayIdx = days.findIndex(d => d.isToday);
+    const todayPct = todayIdx >= 0 ? ((todayIdx + 0.5) / totalDays) * 100 : -1;
+    const denseDays = totalDays > 45;
+    const members = appState.team_members || [];
+
+    const sectionsToRender = (appState.sections || []).filter(
+      sec => ui.phaseFilter === "ALL" || sec.id === ui.phaseFilter
+    );
+
+    const sectionsHtml = sectionsToRender.map(sec => {
+      const secTasks = filteredTasks.filter(t => t.section_id === sec.id);
+      const secCollapsed = Boolean(ui.collapsedSections[sec.id]);
+      const secIdJs = escJs(sec.id);
+
+      let secPctSum = 0;
+      let secDoneTasks = 0;
+      let minS = "", maxE = "";
+      for (const t of secTasks) {
+        const m = computeTaskMetrics(t, todayIso);
+        secPctSum += m.pct;
+        if (m.isDone) secDoneTasks++;
+        if (!minS || t.start_date < minS) minS = t.start_date;
+        if (!maxE || t.end_date > maxE) maxE = t.end_date;
+      }
+      const secPct = secTasks.length > 0 ? Math.round(secPctSum / secTasks.length) : 0;
+      const secHealth = computeDerivedHealth(secTasks, todayIso);
+      const secGeom = (minS && maxE) ? computeBarGeom(minS, maxE, days) : null;
+
+      const secHeaderRow = `
+        <div class="gantt-sec-row" style="grid-template-columns:${gridTemplate};">
+          <div class="gantt-left-cols" style="background:${escAttr(sec.bg)}55;">
+            <div class="gantt-cell" style="display:flex; align-items:center; gap:6px;">
+              <button type="button" class="collapse-btn"
+                      onclick="window.toggleSectionCollapse('${secIdJs}')"
+                      title="${secCollapsed ? "Expand phase" : "Collapse phase"}"
+                      style="color:${escAttr(sec.color)};">${secCollapsed ? "&#9656;" : "&#9662;"}</button>
+              <span style="font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:5px; background:${escAttr(sec.bg)}; color:${escAttr(sec.color)}; flex-shrink:0;">${esc(sec.code)}</span>
+              <input type="text" class="inline-text-inp"
+                     value="${escAttr(sec.title)}"
+                     title="Click to edit Phase title"
+                     onchange="window.editPhaseInlineTitle('${secIdJs}', this.value)"
+                     onkeydown="if(event.key==='Enter'){ event.preventDefault(); this.blur(); }"
+                     style="font-weight:800; font-size:12.5px;" />
+              <button type="button" class="row-icon-btn no-print"
+                      onclick="window.addInlineTaskToSection('${secIdJs}')"
+                      style="border-color:${escAttr(sec.color)}; color:${escAttr(sec.color)};">+ Task</button>
+            </div>
+            <div class="gantt-cell">
+              <span class="health-pill ${secHealth.cls}" style="font-size:9.5px; padding:2px 7px;">${esc(secHealth.label)}</span>
+            </div>
+            <div class="gantt-cell mono-num" style="color:var(--muni-muted); font-size:10.5px;">${minS ? esc(minS) : "—"}</div>
+            <div class="gantt-cell mono-num" style="color:var(--muni-muted); font-size:10.5px;">${maxE ? esc(maxE) : "—"}</div>
+            <div class="gantt-cell mono-num" style="color:${escAttr(sec.color)};">${secPct}% (${secDoneTasks}/${secTasks.length})</div>
+          </div>
+          <div class="gantt-track" style="grid-template-columns:repeat(${totalDays}, 1fr); min-height:35px; background:#F8FAFC;">
+            ${days.map(d => `<div class="gantt-day-bg ${d.isWeekend ? "weekend" : ""} ${d.isMonday ? "week-start" : ""}"></div>`).join("")}
+            ${todayPct >= 0 ? `<div class="gantt-today-line" style="left:${todayPct}%;"></div>` : ""}
+            ${secGeom && !secGeom.outLeft && !secGeom.outRight ? `
+              <div style="position:absolute; left:calc(${secGeom.leftPct}% + 2px); width:calc(${secGeom.widthPct}% - 4px); height:8px; border-radius:999px; background:rgba(20,21,25,0.10); overflow:hidden; z-index:3;"
+                   title="${escAttr(sec.title)}: ${secPct}% complete (${minS} to ${maxE})">
+                <div style="width:${secPct}%; height:100%; background:${escAttr(sec.color)};"></div>
+              </div>
+            ` : ""}
+          </div>
+        </div>
+      `;
+
+      if (secCollapsed) return secHeaderRow;
+
+      const taskRowsHtml = secTasks.length === 0
+        ? `<div style="padding:10px 16px; font-size:12px; color:var(--muni-muted); border-bottom:1px solid var(--muni-border);">No matching tasks in this phase.</div>`
+        : secTasks.map(t => {
+            const m = computeTaskMetrics(t, todayIso);
+            const mem = getMember(t.owner);
+            const geom = computeBarGeom(t.start_date, t.end_date, days);
+            const pal = resolveBarPalette(t, sec, mem);
+            const tIdJs = escJs(t.id);
+            const tIdAttr = escAttr(t.id);
+            const subs = t.subtasks || [];
+            const taskCollapsed = Boolean(ui.collapsedTasks[t.id]);
+
+            const subRows = taskCollapsed ? "" : subs.map(st => {
+              normalizeSubtask(st, t);
+              const sGeom = computeBarGeom(st.start_date, st.end_date, days);
+              const sMem = getMember(st.owner || t.owner);
+              const sPct = st.progress_pct;
+              const stIdJs = escJs(st.id);
+              const stIdAttr = escAttr(st.id);
+              const sOverdue = sPct < 100 && Boolean(st.end_date && st.end_date < todayIso);
+
+              return `
+                <div class="gantt-sub-row" style="grid-template-columns:${gridTemplate};">
+                  <div class="gantt-left-cols">
+                    <div class="gantt-cell" style="padding-left:26px; display:flex; align-items:center; gap:5px;">
+                      <span style="color:var(--muni-orange); font-weight:800; font-size:10px; flex-shrink:0;">&#9584;&#9472;&#9658;</span>
+                      <input type="checkbox" ${sPct >= 100 ? "checked" : ""}
+                             onchange="window.toggleSubtaskDone('${tIdJs}', '${stIdJs}', this.checked)"
+                             title="Mark subtask 100% done"
+                             style="accent-color:var(--muni-orange); cursor:pointer; flex-shrink:0;" />
+                      <input id="sub-title-inp-${stIdAttr}" type="text"
+                             class="inline-text-inp sub ${sPct >= 100 ? "done-strike" : ""}"
+                             value="${escAttr(st.title)}"
+                             placeholder="Subtask name..."
+                             title="${escAttr(st.title)}"
+                             oninput="window.livePreviewSubtaskTitle('${stIdJs}', this.value)"
+                             onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'title', this.value)"
+                             onkeydown="if(event.key==='Enter'){ event.preventDefault(); this.blur(); }" />
+                      <button type="button" class="sub-del-btn no-print"
+                              onclick="window.deleteSubtaskInline('${tIdJs}', '${stIdJs}')"
+                              title="Delete subtask">&#10005;</button>
+                    </div>
+
+                    <div class="gantt-cell">
+                      <select class="inline-member-sel" style="color:${escAttr(sMem.color)};"
+                              onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'owner', this.value)"
+                              title="Subtask assignee">
+                        ${members.map(mm => `<option value="${escAttr(mm.id)}" ${mm.id === (st.owner || t.owner) ? "selected" : ""}>${esc(mm.initials)} ${esc(mm.name)}</option>`).join("")}
+                      </select>
+                    </div>
+
+                    <div class="gantt-cell">
+                      <input id="gantt-start-${stIdAttr}" type="date" class="inline-date-inp"
+                             value="${escAttr(st.start_date)}"
+                             title="Subtask Start Date"
+                             onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'start_date', this.value)" />
+                    </div>
+
+                    <div class="gantt-cell">
+                      <input id="gantt-end-${stIdAttr}" type="date" class="inline-date-inp ${sOverdue ? "overdue" : ""}"
+                             value="${escAttr(st.end_date)}"
+                             title="Subtask End Date"
+                             onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'end_date', this.value)" />
+                    </div>
+
+                    <div class="gantt-cell" style="display:flex; align-items:center; gap:4px;">
+                      <input id="sub-slider-${stIdAttr}" type="range" min="0" max="100" step="5" value="${sPct}"
+                             class="prog-slider no-print"
+                             style="background:linear-gradient(to right, ${sPct >= 80 ? "#0F9D58" : sMem.color} ${sPct}%, #E2E8F0 ${sPct}%);"
+                             oninput="window.livePreviewPct('${stIdJs}', this.value, '${escJs(sMem.color)}', true)"
+                             onchange="window.setSubtaskProgress('${tIdJs}', '${stIdJs}', this.value)"
+                             title="Subtask % complete" />
+                      <input id="pct-num-${stIdAttr}" type="number" min="0" max="100" value="${sPct}"
+                             class="inline-pct-num"
+                             onchange="window.setSubtaskProgress('${tIdJs}', '${stIdJs}', this.value)"
+                             title="Type subtask % (0-100)" />
+                      <span style="font-size:10px; font-weight:800; color:var(--muni-muted);">%</span>
+                    </div>
+                  </div>
+
+                  <div class="gantt-track" style="grid-template-columns:repeat(${totalDays}, 1fr);">
+                    ${days.map(d => `<div class="gantt-day-bg ${d.isWeekend ? "weekend" : ""} ${d.isMonday ? "week-start" : ""}"></div>`).join("")}
+                    ${todayPct >= 0 ? `<div class="gantt-today-line" style="left:${todayPct}%; opacity:0.45;"></div>` : ""}
+                    ${!sGeom.outLeft && !sGeom.outRight ? `
+                      <div id="gantt-bar-${stIdAttr}" class="gantt-bubble sub"
+                           onmousedown="if(event.button===0) window.startGanttDrag(event, '${tIdJs}', '${stIdJs}', 'MOVE', ${sGeom.clampedStart}, ${sGeom.clampedEnd})"
+                           title="Drag to reschedule subtask • Drag edges to resize (${escAttr(st.title)} — ${sPct}%)"
+                           style="left:calc(${sGeom.leftPct}% + 3px); width:calc(${sGeom.widthPct}% - 6px); background:#FFF; border:1.5px solid ${escAttr(sMem.color)};">
+                        <div class="gantt-grip left" onmousedown="if(event.button===0) window.startGanttDrag(event, '${tIdJs}', '${stIdJs}', 'LEFT', ${sGeom.clampedStart}, ${sGeom.clampedEnd})"></div>
+                        <div id="gantt-fill-${stIdAttr}" class="gantt-bubble-fill" style="width:${sPct}%; background:${escAttr(sMem.color)};"></div>
+                        <span id="gantt-bar-lbl-${stIdAttr}" class="gantt-bubble-lbl" style="color:${escAttr(sMem.color)}; font-size:9.5px;">&#8627; ${esc(st.title)} (${sPct}%)</span>
+                        <div class="gantt-grip right" onmousedown="if(event.button===0) window.startGanttDrag(event, '${tIdJs}', '${stIdJs}', 'RIGHT', ${sGeom.clampedStart}, ${sGeom.clampedEnd})"></div>
+                      </div>
+                    ` : ""}
+                  </div>
+                </div>
+              `;
+            }).join("");
+
+            return `
+              <div class="gantt-task-row" style="grid-template-columns:${gridTemplate};">
+                <div class="gantt-left-cols">
+                  <div class="gantt-cell" style="display:flex; align-items:center; gap:5px;">
+                    ${subs.length > 0 ? `
+                      <button type="button" class="collapse-btn"
+                              onclick="window.toggleTaskCollapse('${tIdJs}', event)"
+                              title="${taskCollapsed ? `Expand ${subs.length} subtask(s)` : `Collapse ${subs.length} subtask(s)`}">
+                        ${taskCollapsed ? "&#9656;" : "&#9662;"}
+                      </button>
+                    ` : `<span style="width:18px; flex-shrink:0;"></span>`}
+
+                    <span onclick="window.toggleStarTask('${tIdJs}', event)"
+                          style="cursor:pointer; color:${t.starred ? "var(--muni-orange)" : "#CBD5E1"}; font-size:13px; flex-shrink:0;"
+                          title="Star key roadshow milestone">${t.starred ? "&#9733;" : "&#9734;"}</span>
+
+                    <input id="task-title-inp-${tIdAttr}" type="text"
+                           class="inline-text-inp ${m.isDone ? "done-strike" : ""}"
+                           value="${escAttr(t.title)}"
+                           placeholder="Task name..."
+                           title="${escAttr(t.title)}"
+                           oninput="window.livePreviewTaskTitle('${tIdJs}', this.value, ${m.pct})"
+                           onchange="window.updateTaskField('${tIdJs}', 'title', this.value)"
+                           onkeydown="if(event.key==='Enter'){ event.preventDefault(); this.blur(); }" />
+
+                    ${taskCollapsed && subs.length > 0 ? `
+                      <button type="button" class="row-icon-btn"
+                              onclick="window.toggleTaskCollapse('${tIdJs}', event)"
+                              title="Click to expand ${subs.length} hidden subtask(s)"
+                              style="background:#F1F5F9; color:#334155;">&#8627;${subs.length}</button>
+                    ` : ""}
+
+                    <button type="button" class="row-icon-btn no-print"
+                            onclick="window.addInlineSubtask('${tIdJs}', event)"
+                            title="Add subtask right below this task"
+                            style="border-color:rgba(240,83,50,0.32); color:var(--muni-orange);">+&#8627;</button>
+
+                    <button type="button" class="row-icon-btn no-print"
+                            onclick="window.openTaskDrawer('${tIdJs}')"
+                            title="Open full task drawer (deliverables, notes, priority, duplicate, delete)">&#8599;</button>
+                  </div>
+
+                  <div class="gantt-cell">
+                    <select class="inline-member-sel" style="color:${escAttr(mem.color)};"
+                            onchange="window.updateTaskField('${tIdJs}', 'owner', this.value)"
+                            title="Task assignee">
+                      ${members.map(mm => `<option value="${escAttr(mm.id)}" ${mm.id === t.owner ? "selected" : ""}>${esc(mm.initials)} ${esc(mm.name)}</option>`).join("")}
+                    </select>
+                  </div>
+
+                  <div class="gantt-cell">
+                    <input id="gantt-start-${tIdAttr}" type="date" class="inline-date-inp"
+                           value="${escAttr(t.start_date)}"
+                           title="Task Start Date"
+                           onchange="window.updateTaskField('${tIdJs}', 'start_date', this.value)" />
+                  </div>
+
+                  <div class="gantt-cell">
+                    <input id="gantt-end-${tIdAttr}" type="date" class="inline-date-inp ${m.isOverdue ? "overdue" : ""}"
+                           value="${escAttr(t.end_date)}"
+                           title="${m.isOverdue ? "Overdue — click to update End Date" : "Task End Date"}"
+                           onchange="window.updateTaskField('${tIdJs}', 'end_date', this.value)" />
+                  </div>
+
+                  <div class="gantt-cell" style="display:flex; align-items:center; gap:4px;">
+                    <input id="task-slider-${tIdAttr}" type="range" min="0" max="100" step="5" value="${m.pct}"
+                           class="prog-slider no-print"
+                           style="background:linear-gradient(to right, ${m.pct >= 80 ? "#0F9D58" : "#2563EB"} ${m.pct}%, #E2E8F0 ${m.pct}%);"
+                           oninput="window.livePreviewPct('${tIdJs}', this.value, '${escJs(pal.border)}', false)"
+                           onchange="window.setTaskProgress('${tIdJs}', this.value)"
+                           title="Drag to update % complete" />
+                    <input id="pct-num-${tIdAttr}" type="number" min="0" max="100" value="${m.pct}"
+                           class="inline-pct-num"
+                           onchange="window.setTaskProgress('${tIdJs}', this.value)"
+                           title="Type % complete (0-100)" />
+                    <span style="font-size:10px; font-weight:800; color:var(--muni-muted);">%</span>
+                  </div>
+                </div>
+
+                <div class="gantt-track" style="grid-template-columns:repeat(${totalDays}, 1fr);">
+                  ${days.map(d => `<div class="gantt-day-bg ${d.isWeekend ? "weekend" : ""} ${d.isMonday ? "week-start" : ""}"></div>`).join("")}
+                  ${todayPct >= 0 ? `<div class="gantt-today-line" style="left:${todayPct}%;"></div>` : ""}
+                  ${geom.outLeft ? `
+                    <button type="button" onclick="window.jumpTimelineTo('${escJs(t.start_date)}')"
+                            style="position:absolute; left:6px; z-index:6; border:1px solid var(--muni-border-strong); background:#FFF; border-radius:999px; font-size:10px; font-weight:800; padding:2px 8px; cursor:pointer;">&larr; ${esc(t.start_date.slice(5))}</button>
+                  ` : (geom.outRight ? `
+                    <button type="button" onclick="window.jumpTimelineTo('${escJs(t.start_date)}')"
+                            style="position:absolute; right:6px; z-index:6; border:1px solid var(--muni-border-strong); background:#FFF; border-radius:999px; font-size:10px; font-weight:800; padding:2px 8px; cursor:pointer;">${esc(t.start_date.slice(5))} &rarr;</button>
+                  ` : `
+                    <div id="gantt-bar-${tIdAttr}" class="gantt-bubble"
+                         onmousedown="if(event.button===0) window.startGanttDrag(event, '${tIdJs}', '', 'MOVE', ${geom.clampedStart}, ${geom.clampedEnd})"
+                         ondblclick="window.openTaskDrawer('${tIdJs}')"
+                         title="Drag bar to move • Drag left/right edges to resize dates • Double-click for details (${escAttr(t.title)} — ${m.pct}%)"
+                         style="left:calc(${geom.leftPct}% + 2px); width:calc(${geom.widthPct}% - 4px); background:${escAttr(pal.bg)}; border:1.5px solid ${escAttr(pal.border)};">
+                      <div class="gantt-grip left" title="Drag left edge to adjust Start Date" onmousedown="if(event.button===0) window.startGanttDrag(event, '${tIdJs}', '', 'LEFT', ${geom.clampedStart}, ${geom.clampedEnd})"></div>
+                      <div id="gantt-fill-${tIdAttr}" class="gantt-bubble-fill" style="width:${m.pct}%; background:${escAttr(pal.border)};"></div>
+                      <span id="gantt-bar-lbl-${tIdAttr}" class="gantt-bubble-lbl" style="color:${escAttr(pal.text)};">${esc(t.title)} (${m.pct}%)</span>
+                      <div class="gantt-grip right" title="Drag right edge to adjust End Date" onmousedown="if(event.button===0) window.startGanttDrag(event, '${tIdJs}', '', 'RIGHT', ${geom.clampedStart}, ${geom.clampedEnd})"></div>
+                    </div>
+                  `)}
+                </div>
+              </div>
+              ${subRows}
+            `;
+          }).join("");
+
+      return secHeaderRow + taskRowsHtml;
+    }).join("");
+
+    return `
+      <div id="ganttWrapRoot" class="gantt-wrap" style="--task-col-w:${ui.taskColWidth}px;">
+        <div class="gantt-minwidth">
+          <!-- Full-Height Draggable Column Resize Rail on Right Edge of Task Column -->
+          <div class="col-resize-rail no-print"
+               title="Drag horizontally to widen or narrow Task &amp; Subtasks column (double-click to reset)"
+               onmousedown="window.startTaskColResize(event)"
+               ondblclick="window.resetTaskColWidth()"></div>
+
+          <!-- Tier 1 Header: MuniLM Schedule Group + WEEK 1..N Band -->
+          <div class="gantt-hdr-top" style="grid-template-columns:${gridTemplate}; border-bottom:1px solid var(--muni-border);">
+            <div class="gantt-left-cols" style="background:#F1F5F9;">
+              <div class="gantt-cell gantt-hdr-cell" style="grid-column:1 / -1; background:#F1F5F9; display:flex; justify-content:space-between; align-items:center;">
+                <span>MUNILM LAUNCH SCHEDULE &amp; MILESTONE ROLLUP</span>
+                <span style="color:var(--muni-orange); font-size:9.5px;">&#8596; DRAG COLUMN DIVIDER OR GANTT BARS</span>
+              </div>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(${totalDays}, 1fr); background:#F1F5F9;">
+              ${weeks.map(w => `
+                <div style="grid-column:span ${w.span}; padding:5px 4px; text-align:center; font-size:9.5px; font-weight:800; letter-spacing:0.05em; color:var(--muni-charcoal); border-left:1px solid rgba(20,21,25,0.10); overflow:hidden; white-space:nowrap; text-overflow:ellipsis;">
+                  ${esc(w.label)}
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
+          <!-- Tier 2 Header: Column Titles + Daily Cells -->
+          <div class="gantt-hdr-days" style="grid-template-columns:${gridTemplate}; border-bottom:1.5px solid var(--muni-border-strong);">
+            <div class="gantt-left-cols" style="background:#F8FAFC;">
+              <div class="gantt-cell gantt-hdr-cell" style="display:flex; align-items:center; justify-content:space-between;">
+                <span>Task &amp; Connected Subtasks</span>
+                <span style="font-size:9px; color:var(--muni-muted); font-weight:700;">&#8596; Resize</span>
+                <div class="col-resize-grip no-print"
+                     title="Drag horizontally to expand or shrink column (double-click to reset)"
+                     onmousedown="window.startTaskColResize(event)"
+                     ondblclick="window.resetTaskColWidth()"></div>
+              </div>
+              <div class="gantt-cell gantt-hdr-cell">Member</div>
+              <div class="gantt-cell gantt-hdr-cell">Start</div>
+              <div class="gantt-cell gantt-hdr-cell">End</div>
+              <div class="gantt-cell gantt-hdr-cell">% Done</div>
+            </div>
+            <div style="display:grid; grid-template-columns:repeat(${totalDays}, 1fr); background:#F8FAFC;">
+              ${days.map(d => `
+                <div style="padding:4px 1px; text-align:center; border-right:1px solid rgba(20,21,25,0.045); ${d.isMonday ? "border-left:1px solid rgba(20,21,25,0.11);" : ""} background:${d.isToday ? "rgba(240,83,50,0.14)" : (d.isWeekend ? "#EEF2F6" : "transparent")};"
+                     title="${escAttr(d.iso)}">
+                  ${!denseDays ? `<div style="font-size:8.5px; font-weight:700; color:${d.isToday ? "var(--muni-orange)" : "var(--muni-muted)"};">${esc(d.weekdayNarrow)}</div>` : ""}
+                  <div style="font-size:${denseDays ? "9px" : "10.5px"}; font-weight:800; color:${d.isToday ? "var(--muni-orange)" : "var(--muni-ink)"};">${ denseDays && !d.isMonday && !d.isToday ? "" : d.dayNum }</div>
+                </div>
+              `).join("")}
+            </div>
+          </div>
+
+          <!-- Body Sections, Collapsible Tasks & Draggable Bars -->
+          <div>${sectionsHtml}</div>
+        </div>
+      </div>
+    `;
+  }
+
+  // --- Horizontal Drag Resizer for Task & Connected Subtasks Column ---
+  window.startTaskColResize = function(ev) {
+    ev.preventDefault();
+    ev.stopPropagation();
+    const wrap = document.getElementById("ganttWrapRoot");
+    if (!wrap) return;
+    const startX = ev.clientX;
+    const initW = ui.taskColWidth || DEFAULT_TASK_COL_WIDTH;
+    wrap.classList.add("resizing-col");
+    document.body.style.cursor = "col-resize";
+
+    const onMove = (me) => {
+      const nextW = Math.max(MIN_TASK_COL_WIDTH, Math.min(MAX_TASK_COL_WIDTH, Math.round(initW + (me.clientX - startX))));
+      ui.taskColWidth = nextW;
+      wrap.style.setProperty("--task-col-w", nextW + "px");
+    };
+
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      wrap.classList.remove("resizing-col");
+      document.body.style.cursor = "";
+      saveUiPrefs();
+    };
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
+  window.resetTaskColWidth = function() {
+    ui.taskColWidth = DEFAULT_TASK_COL_WIDTH;
+    const wrap = document.getElementById("ganttWrapRoot");
+    if (wrap) wrap.style.setProperty("--task-col-w", DEFAULT_TASK_COL_WIDTH + "px");
+    saveUiPrefs();
+  };
+
+  // --- Live Inline Preview Helpers (Zero Re-render Lag While Typing/Dragging) ---
+  window.livePreviewTaskTitle = function(taskId, val, pct) {
+    const lbl = document.getElementById("gantt-bar-lbl-" + taskId);
+    if (lbl) lbl.textContent = `${val} (${pct}%)`;
+  };
+
+  window.livePreviewSubtaskTitle = function(subId, val) {
+    const numEl = document.getElementById("pct-num-" + subId);
+    const pct = numEl ? numEl.value : 0;
+    const lbl = document.getElementById("gantt-bar-lbl-" + subId);
+    if (lbl) lbl.textContent = `↳ ${val} (${pct}%)`;
+  };
+
+  window.livePreviewPct = function(id, val, colorHex, isSub) {
+    const n = Math.max(0, Math.min(100, parseInt(val, 10) || 0));
+    const numEl = document.getElementById("pct-num-" + id);
+    if (numEl) numEl.value = String(n);
+    const fillEl = document.getElementById("gantt-fill-" + id);
+    if (fillEl) fillEl.style.width = n + "%";
+    const slider = document.getElementById((isSub ? "sub-slider-" : "task-slider-") + id);
+    if (slider) {
+      const c = n >= 80 ? "#0F9D58" : (colorHex || "#2563EB");
+      slider.style.background = `linear-gradient(to right, ${c} ${n}%, #E2E8F0 ${n}%)`;
+    }
+    const titleInp = document.getElementById((isSub ? "sub-title-inp-" : "task-title-inp-") + id);
+    const lbl = document.getElementById("gantt-bar-lbl-" + id);
+    if (lbl && titleInp) {
+      lbl.textContent = isSub ? `↳ ${titleInp.value} (${n}%)` : `${titleInp.value} (${n}%)`;
+    }
+  };
+
+  // --- VIEW 2: Sortable & Inline-Editable Table View (with Collapsible Subtasks) ---
+  function renderTableView(filteredTasks, todayIso) {
+    const sorted = [...filteredTasks];
+    const dir = ui.tableSortDir === "desc" ? -1 : 1;
+    const statusOrd = { Todo: 1, Doing: 2, Stuck: 3, Done: 4 };
+    sorted.sort((a, b) => {
+      const ma = computeTaskMetrics(a, todayIso);
+      const mb = computeTaskMetrics(b, todayIso);
+      const f = ui.tableSortField;
+      if (f === "title") return dir * a.title.localeCompare(b.title);
+      if (f === "phase") return dir * getSection(a.section_id).title.localeCompare(getSection(b.section_id).title);
+      if (f === "owner") return dir * getMember(a.owner).name.localeCompare(getMember(b.owner).name);
+      if (f === "priority") return dir * ((a.priority || 3) - (b.priority || 3));
+      if (f === "progress") return dir * (ma.pct - mb.pct);
+      if (f === "status") return dir * ((statusOrd[a.status] || 9) - (statusOrd[b.status] || 9));
+      if (f === "end_date") return dir * (a.end_date || "").localeCompare(b.end_date || "");
+      return dir * (a.start_date || "").localeCompare(b.start_date || "");
+    });
+
+    const arrow = (f) => ui.tableSortField === f ? (ui.tableSortDir === "asc" ? " &uarr;" : " &darr;") : "";
+    const members = appState.team_members || [];
+    const sections = appState.sections || [];
+
+    return `
+      <div class="table-wrap">
+        <table class="muni-tbl">
+          <thead>
+            <tr>
+              <th style="width:36%;" onclick="window.sortLaunchTable('title')">Task &amp; Subtasks${arrow("title")}</th>
+              <th onclick="window.sortLaunchTable('phase')">Phase${arrow("phase")}</th>
+              <th onclick="window.sortLaunchTable('owner')">Member${arrow("owner")}</th>
+              <th onclick="window.sortLaunchTable('priority')">Priority${arrow("priority")}</th>
+              <th onclick="window.sortLaunchTable('progress')">% Complete${arrow("progress")}</th>
+              <th onclick="window.sortLaunchTable('status')">Status${arrow("status")}</th>
+              <th onclick="window.sortLaunchTable('start_date')">Start Date${arrow("start_date")}</th>
+              <th onclick="window.sortLaunchTable('end_date')">End Date${arrow("end_date")}</th>
+            </tr>
+          </thead>
+          <tbody>
+            ${sorted.map(t => {
+              const m = computeTaskMetrics(t, todayIso);
+              const sec = getSection(t.section_id);
+              const stStyle = STATUS_STYLE[t.status] || STATUS_STYLE.Todo;
+              const tIdJs = escJs(t.id);
+              const subs = t.subtasks || [];
+              const taskCollapsed = Boolean(ui.collapsedTasks[t.id]);
+
+              const subRowsHtml = taskCollapsed ? "" : subs.map(st => {
+                normalizeSubtask(st, t);
+                const stIdJs = escJs(st.id);
+                const sPct = st.progress_pct;
+                return `
+                  <tr class="tbl-sub-row">
+                    <td style="padding-left:38px;">
+                      <div style="display:flex; align-items:center; gap:6px;">
+                        <span style="color:var(--muni-orange); font-weight:800; font-size:10.5px;">&#9584;&#9472;&#9658;</span>
+                        <input type="checkbox" ${sPct >= 100 ? "checked" : ""}
+                               onchange="window.toggleSubtaskDone('${tIdJs}', '${stIdJs}', this.checked)"
+                               style="accent-color:var(--muni-orange); cursor:pointer;" />
+                        <input type="text" class="inline-text-inp sub ${sPct >= 100 ? "done-strike" : ""}"
+                               value="${escAttr(st.title)}"
+                               onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'title', this.value)" />
+                        <button type="button" class="row-icon-btn" style="color:var(--fail-red);" onclick="window.deleteSubtaskInline('${tIdJs}', '${stIdJs}')" title="Delete subtask">&#10005;</button>
+                      </div>
+                    </td>
+                    <td><span style="font-size:10.5px; color:var(--muni-muted);">Subtask</span></td>
+                    <td>
+                      <select class="sel" style="padding:3px 7px; font-size:11px; font-weight:700;"
+                              onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'owner', this.value)">
+                        ${members.map(mem => `<option value="${escAttr(mem.id)}" ${mem.id === (st.owner || t.owner) ? "selected" : ""}>${esc(mem.name)}</option>`).join("")}
+                      </select>
+                    </td>
+                    <td><span style="color:var(--muni-muted); font-size:11px;">—</span></td>
+                    <td>
+                      <div style="display:flex; align-items:center; gap:5px;">
+                        <input type="range" min="0" max="100" step="5" value="${sPct}" class="prog-slider"
+                               style="background:linear-gradient(to right, ${sPct >= 80 ? "#0F9D58" : "#2563EB"} ${sPct}%, #E2E8F0 ${sPct}%);"
+                               onchange="window.setSubtaskProgress('${tIdJs}', '${stIdJs}', this.value)" />
+                        <input type="number" min="0" max="100" value="${sPct}" class="inline-pct-num"
+                               onchange="window.setSubtaskProgress('${tIdJs}', '${stIdJs}', this.value)" />
+                        <span style="font-size:10.5px; color:var(--muni-muted);">%</span>
+                      </div>
+                    </td>
+                    <td><span style="font-size:11px; font-weight:700; color:${sPct >= 100 ? "var(--pass-green)" : "var(--muni-muted)"};">${sPct >= 100 ? "Done" : (sPct > 0 ? "Doing" : "Todo")}</span></td>
+                    <td><input type="date" class="inp mono-num" style="padding:3px 6px; font-size:11px;" value="${escAttr(st.start_date)}" onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'start_date', this.value)" /></td>
+                    <td><input type="date" class="inp mono-num" style="padding:3px 6px; font-size:11px;" value="${escAttr(st.end_date)}" onchange="window.updateSubtaskField('${tIdJs}', '${stIdJs}', 'end_date', this.value)" /></td>
+                  </tr>
+                `;
+              }).join("");
+
+              return `
+                <tr class="tbl-row">
+                  <td>
+                    <div style="display:flex; align-items:center; gap:6px;">
+                      ${subs.length > 0 ? `
+                        <button type="button" class="collapse-btn" onclick="window.toggleTaskCollapse('${tIdJs}', event)">${taskCollapsed ? "&#9656;" : "&#9662;"}</button>
+                      ` : `<span style="width:18px; flex-shrink:0;"></span>`}
+                      <span onclick="window.toggleStarTask('${tIdJs}', event)" style="cursor:pointer; color:${t.starred ? "var(--muni-orange)" : "#CBD5E1"};">${t.starred ? "&#9733;" : "&#9734;"}</span>
+                      <input type="text" class="inline-text-inp ${m.isDone ? "done-strike" : ""}"
+                             value="${escAttr(t.title)}"
+                             onchange="window.updateTaskField('${tIdJs}', 'title', this.value)" />
+                      ${subs.length ? `<span style="font-size:10px; font-weight:800; padding:1px 6px; border-radius:6px; background:#F1F5F9; color:#334155;">&#8627;${subs.length}</span>` : ""}
+                      <button type="button" class="row-icon-btn" style="color:var(--muni-orange);" onclick="window.addInlineSubtask('${tIdJs}', event)" title="Add subtask">+&#8627;</button>
+                      <button type="button" class="row-icon-btn" onclick="window.openTaskDrawer('${tIdJs}')" title="Open full drawer">&#8599;</button>
+                    </div>
+                  </td>
+                  <td>
+                    <select class="sel" style="padding:3px 7px; font-size:11px; font-weight:700; background:${escAttr(sec.bg)}; color:${escAttr(sec.color)}; border:none;"
+                            onchange="window.updateTaskField('${tIdJs}', 'section_id', this.value)">
+                      ${sections.map(s => `<option value="${escAttr(s.id)}" ${s.id === t.section_id ? "selected" : ""}>${esc(s.code)}</option>`).join("")}
+                    </select>
+                  </td>
+                  <td>
+                    <select class="sel" style="padding:4px 8px; font-size:11.5px; font-weight:700;"
+                            onchange="window.updateTaskField('${tIdJs}', 'owner', this.value)">
+                      ${members.map(mem => `<option value="${escAttr(mem.id)}" ${mem.id === t.owner ? "selected" : ""}>${esc(mem.name)}</option>`).join("")}
+                    </select>
+                  </td>
+                  <td>
+                    <div style="display:inline-flex; gap:2px;">
+                      ${[1, 2, 3, 4, 5].map(n => `
+                        <span onclick="window.updateTaskField('${tIdJs}', 'priority', ${n})"
+                              style="cursor:pointer; font-size:13px; color:${n <= t.priority ? "#F59E0B" : "#CBD5E1"};">&#9733;</span>
+                      `).join("")}
+                    </div>
+                  </td>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:5px;">
+                      <input type="range" min="0" max="100" step="5" value="${m.pct}" class="prog-slider"
+                             style="background:linear-gradient(to right, ${m.pct >= 80 ? "#0F9D58" : "#2563EB"} ${m.pct}%, #E2E8F0 ${m.pct}%);"
+                             onchange="window.setTaskProgress('${tIdJs}', this.value)" />
+                      <input type="number" min="0" max="100" value="${m.pct}" class="inline-pct-num"
+                             onchange="window.setTaskProgress('${tIdJs}', this.value)" />
+                      <span style="font-size:10.5px; color:var(--muni-muted);">%</span>
+                    </div>
+                  </td>
+                  <td>
+                    <select class="sel" style="padding:4px 8px; font-size:11.5px; font-weight:800; background:${stStyle.bg}; color:${stStyle.color}; border:none;"
+                            onchange="window.setTaskStatus('${tIdJs}', this.value)">
+                      ${STATUS_LIST.map(st => `<option value="${st}" ${st === t.status ? "selected" : ""}>${st}</option>`).join("")}
+                    </select>
+                  </td>
+                  <td><input type="date" class="inp mono-num" style="padding:3px 6px; font-size:11px;" value="${escAttr(t.start_date)}" onchange="window.updateTaskField('${tIdJs}', 'start_date', this.value)" /></td>
+                  <td><input type="date" class="inp mono-num" style="padding:3px 6px; font-size:11px; ${m.isOverdue ? "border-color:var(--fail-red); color:var(--fail-red);" : ""}" value="${escAttr(t.end_date)}" onchange="window.updateTaskField('${tIdJs}', 'end_date', this.value)" /></td>
+                </tr>
+                ${subRowsHtml}
+              `;
+            }).join("")}
+          </tbody>
+        </table>
+      </div>
+    `;
+  }
+
+  // --- VIEW 3: Drag-and-Drop Kanban Board ---
+  function renderKanbanView(filteredTasks, todayIso) {
+    return `
+      <div class="kanban-grid">
+        ${STATUS_LIST.map(col => {
+          const colTasks = filteredTasks.filter(t => t.status === col);
+          const stStyle = STATUS_STYLE[col];
+          return `
+            <div class="kanban-col"
+                 ondragover="event.preventDefault(); this.classList.add('drag-over');"
+                 ondragleave="this.classList.remove('drag-over');"
+                 ondrop="this.classList.remove('drag-over'); window.onKanbanDrop('${col}')">
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:10px;">
+                <span style="font-size:11.5px; font-weight:800; padding:3px 10px; border-radius:8px; background:${stStyle.bg}; color:${stStyle.color};">${col}</span>
+                <span class="mono-num" style="color:var(--muni-muted);">${colTasks.length}</span>
+              </div>
+              ${colTasks.map(t => {
+                const m = computeTaskMetrics(t, todayIso);
+                const sec = getSection(t.section_id);
+                const mem = getMember(t.owner);
+                const tIdJs = escJs(t.id);
+                return `
+                  <div class="kanban-card" draggable="true"
+                       ondragstart="window.onKanbanDragStart('${tIdJs}')"
+                       onclick="window.openTaskDrawer('${tIdJs}')">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:6px; margin-bottom:6px;">
+                      <span style="font-size:9.5px; font-weight:800; padding:2px 7px; border-radius:5px; background:${escAttr(sec.bg)}; color:${escAttr(sec.color)};">${esc(sec.code)}</span>
+                      <div style="display:flex; align-items:center; gap:5px;">
+                        ${(t.subtasks || []).length ? `<span style="font-size:9.5px; font-weight:800; color:var(--muni-muted);">&#8627;${t.subtasks.length}</span>` : ""}
+                        ${t.starred ? `<span style="color:var(--muni-orange); font-size:12px;">&#9733;</span>` : ""}
+                        <span class="avatar-dot" style="background:${escAttr(mem.color)};" title="${escAttr(mem.full_name)}">${esc(mem.initials)}</span>
+                      </div>
+                    </div>
+                    <div style="font-size:13px; font-weight:700; color:var(--muni-ink); line-height:1.38; margin-bottom:8px;">${esc(t.title)}</div>
+                    <div style="height:5px; border-radius:999px; background:#E2E8F0; overflow:hidden; margin-bottom:7px;">
+                      <div style="width:${m.pct}%; height:100%; background:${escAttr(mem.color)};"></div>
+                    </div>
+                    <div style="display:flex; justify-content:space-between; align-items:center; font-size:10.5px; color:${m.isOverdue ? "var(--fail-red)" : "var(--muni-muted)"};" class="mono-num">
+                      <span>${esc(t.start_date.slice(5))} &rarr; ${esc(t.end_date.slice(5))}</span>
+                      <span>${m.pct}%</span>
+                    </div>
+                  </div>
+                `;
+              }).join("")}
+            </div>
+          `;
+        }).join("")}
+      </div>
+    `;
+  }
+
+  // --- Interactive Gantt Bar Drag & Edge-Resize ---
+  window.startGanttDrag = function(ev, taskId, subtaskId, mode, initStartIdx, initEndIdx) {
+    ev.stopPropagation();
+    ev.preventDefault();
+    const days = window._launchTimelineDays || [];
+    const total = days.length;
+    if (!total) return;
+
+    const domId = subtaskId || taskId;
+    const barEl = document.getElementById("gantt-bar-" + domId);
+    if (!barEl) return;
+    const trackEl = barEl.closest(".gantt-track");
+    if (!trackEl) return;
+
+    const rect = trackEl.getBoundingClientRect();
+    const dayIdxAt = (clientX) => {
+      const rel = clientX - rect.left;
+      return Math.max(0, Math.min(total - 1, Math.floor((rel / Math.max(1, rect.width)) * total)));
+    };
+
+    const grabIdx = dayIdxAt(ev.clientX);
+    const span = Math.max(0, initEndIdx - initStartIdx);
+    let curS = initStartIdx;
+    let curE = initEndIdx;
+    let moved = false;
+
+    barEl.style.boxShadow = "0 6px 18px rgba(20, 21, 25, 0.22)";
+    barEl.style.zIndex = "15";
+
+    const onMove = (me) => {
+      const idx = dayIdxAt(me.clientX);
+      if (mode === "LEFT") {
+        curS = Math.min(idx, curE);
+      } else if (mode === "RIGHT") {
+        curE = Math.max(idx, curS);
+      } else {
+        const delta = idx - grabIdx;
+        curS = Math.max(0, Math.min(total - 1 - span, initStartIdx + delta));
+        curE = curS + span;
+      }
+      moved = true;
+      const leftPct = (curS / total) * 100;
+      const widthPct = Math.max(100 / total, ((curE - curS + 1) / total) * 100);
+      barEl.style.left = `calc(${leftPct}% + 2px)`;
+      barEl.style.width = `calc(${widthPct}% - 4px)`;
+      const sInp = document.getElementById("gantt-start-" + domId);
+      const eInp = document.getElementById("gantt-end-" + domId);
+      if (sInp && days[curS]) sInp.value = days[curS].iso;
+      if (eInp && days[curE]) eInp.value = days[curE].iso;
+    };
+
+    const onUp = () => {
+      window.removeEventListener("mousemove", onMove);
+      window.removeEventListener("mouseup", onUp);
+      barEl.style.boxShadow = "";
+      barEl.style.zIndex = "5";
+      if (!moved || !days[curS] || !days[curE]) return;
+
+      const t = (appState.tasks || []).find(x => x.id === taskId);
+      if (!t) return;
+      if (subtaskId) {
+        const st = (t.subtasks || []).find(s => s.id === subtaskId);
+        if (st) {
+          st.start_date = days[curS].iso;
+          st.end_date = days[curE].iso;
+        }
+      } else {
+        t.start_date = days[curS].iso;
+        t.end_date = days[curE].iso;
+      }
+      scheduleSaveState("Updated schedule dates");
+      renderApp();
+    };
+
+    window.addEventListener("mousemove", onMove);
+    window.addEventListener("mouseup", onUp);
+  };
+
+  // --- Toolbar, Collapse & Inline Editing Actions ---
+  window.setLaunchView = function(v) { ui.viewMode = v; renderApp(); };
+  window.setGanttZoom = function(z) { ui.zoomMode = z; ui.panOffsetDays = 0; renderApp(); };
+  window.panGantt = function(delta) { ui.panOffsetDays = delta === 0 ? 0 : ui.panOffsetDays + delta; renderApp(); };
+  window.jumpTimelineTo = function(iso) {
+    ui.panOffsetDays = diffCalendarDays(todayIsoStr(), iso) + 2;
+    renderApp();
+  };
+  window.setGanttColorBy = function(mode) { ui.colorBy = mode; renderApp(); };
+  window.setPhaseFilter = function(secId) { ui.phaseFilter = secId; renderApp(); };
+  window.setOwnerFilter = function(own) { ui.ownerFilter = own; renderApp(); };
+  window.toggleOwnerTileFilter = function(key) {
+    ui.ownerFilter = ui.ownerFilter === key ? "ALL" : key;
+    renderApp();
+  };
+  window.clearAllFilters = function() {
+    ui.ownerFilter = "ALL";
+    ui.phaseFilter = "ALL";
+    ui.searchQuery = "";
+    renderApp();
+  };
+  window.onLaunchSearch = function(q) {
+    ui.searchQuery = q || "";
+    renderApp();
+    const inp = document.querySelector('input[type="search"]');
+    if (inp) { inp.focus(); inp.setSelectionRange(inp.value.length, inp.value.length); }
+  };
+
+  window.toggleSectionCollapse = function(secId) {
+    ui.collapsedSections[secId] = !ui.collapsedSections[secId];
+    renderApp();
+  };
+  window.expandCollapseAllPhases = function(collapse) {
+    ui.collapsedSections = {};
+    if (collapse) {
+      for (const s of (appState.sections || [])) ui.collapsedSections[s.id] = true;
+    }
+    renderApp();
+  };
+
+  window.toggleTaskCollapse = function(taskId, ev) {
+    if (ev) ev.stopPropagation();
+    ui.collapsedTasks[taskId] = !ui.collapsedTasks[taskId];
+    renderApp();
+  };
+  window.expandCollapseAllTasks = function(collapse) {
+    ui.collapsedTasks = {};
+    if (collapse) {
+      for (const t of (appState.tasks || [])) {
+        if ((t.subtasks || []).length > 0) ui.collapsedTasks[t.id] = true;
+      }
+    }
+    renderApp();
+  };
+
+  window.sortLaunchTable = function(field) {
+    if (ui.tableSortField === field) {
+      ui.tableSortDir = ui.tableSortDir === "asc" ? "desc" : "asc";
+    } else {
+      ui.tableSortField = field;
+      ui.tableSortDir = "asc";
+    }
+    renderApp();
+  };
+
+  window.editPhaseInlineTitle = function(secId, val) {
+    const s = (appState.sections || []).find(x => x.id === secId);
+    const clean = (val || "").trim();
+    if (!s || !clean) { renderApp(); return; }
+    s.title = clean;
+    scheduleSaveState("Updated phase title");
+    renderApp();
+  };
+
+  window.addInlineTaskToSection = function(secId) {
+    const sIso = todayIsoStr();
+    const newTask = normalizeTask({
+      id: "tsk_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 5),
+      section_id: secId,
+      title: "New Launch Task",
+      owner: (appState.team_members[0] && appState.team_members[0].id) || "both",
+      status: "Todo",
+      priority: 4,
+      progress_pct: 0,
+      start_date: sIso,
+      end_date: addDaysIso(sIso, 5),
+      starred: false,
+      deliverable: "",
+      links: [],
+      subtasks: []
+    });
+    appState.tasks.push(newTask);
+    delete ui.collapsedSections[secId];
+    scheduleSaveState("Added task");
+    renderApp();
+    setTimeout(() => {
+      const inp = document.getElementById("task-title-inp-" + newTask.id);
+      if (inp) { inp.focus(); inp.select(); }
+    }, 40);
+  };
+
+  window.toggleStarTask = function(taskId, ev) {
+    if (ev) ev.stopPropagation();
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t) return;
+    t.starred = !t.starred;
+    scheduleSaveState();
+    renderApp();
+  };
+
+  window.setTaskProgress = function(taskId, val) {
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t) return;
+    const n = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+    t.progress_pct = n;
+    if (n === 100) t.status = "Done";
+    else if (n > 0 && t.status === "Todo") t.status = "Doing";
+    else if (n < 100 && t.status === "Done") t.status = "Doing";
+    scheduleSaveState();
+    renderApp();
+  };
+
+  window.setTaskStatus = function(taskId, statusVal) {
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t || !STATUS_LIST.includes(statusVal)) return;
+    t.status = statusVal;
+    if (statusVal === "Done") t.progress_pct = 100;
+    else if (statusVal === "Todo" && t.progress_pct === 100) t.progress_pct = 0;
+    else if (statusVal === "Doing" && t.progress_pct === 0) t.progress_pct = 25;
+    scheduleSaveState();
+    renderApp();
+  };
+
+  window.updateTaskField = function(taskId, field, value) {
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t) return;
+    if (field === "title") {
+      const clean = String(value || "").trim();
+      if (!clean) { renderApp(); return; }
+      t.title = clean;
+    } else {
+      t[field] = value;
+      if (field === "start_date" && t.end_date < t.start_date) t.end_date = t.start_date;
+      if (field === "end_date" && t.end_date < t.start_date) t.start_date = t.end_date;
+    }
+    normalizeTask(t);
+    scheduleSaveState();
+    renderApp();
+  };
+
+  // --- Inline Subtask Actions (Full Field + Percentage Editing) ---
+  window.addInlineSubtask = function(taskId, ev) {
+    if (ev) ev.stopPropagation();
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t) return;
+    if (!Array.isArray(t.subtasks)) t.subtasks = [];
+    const newSub = normalizeSubtask({
+      id: "sub_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 5),
+      title: "New Subtask",
+      owner: t.owner,
+      start_date: t.start_date,
+      end_date: t.end_date,
+      progress_pct: 0,
+      done: false
+    }, t);
+    t.subtasks.push(newSub);
+    delete ui.collapsedTasks[taskId];
+    scheduleSaveState("Added subtask");
+    renderApp();
+    setTimeout(() => {
+      const inp = document.getElementById("sub-title-inp-" + newSub.id);
+      if (inp) { inp.focus(); inp.select(); }
+    }, 40);
+  };
+
+  window.toggleSubtaskDone = function(taskId, subId, checked) {
+    window.setSubtaskProgress(taskId, subId, checked ? 100 : 0);
+  };
+
+  window.setSubtaskProgress = function(taskId, subId, val) {
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t) return;
+    const st = (t.subtasks || []).find(s => s.id === subId);
+    if (!st) return;
+    const n = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+    st.progress_pct = n;
+    st.done = n >= 100;
+    scheduleSaveState();
+    renderApp();
+  };
+
+  window.updateSubtaskField = function(taskId, subId, field, value) {
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t) return;
+    const st = (t.subtasks || []).find(s => s.id === subId);
+    if (!st) return;
+    if (field === "title") {
+      const clean = String(value || "").trim();
+      if (!clean) { renderApp(); return; }
+      st.title = clean;
+    } else {
+      st[field] = value;
+      if (field === "start_date" && st.end_date < st.start_date) st.end_date = st.start_date;
+      if (field === "end_date" && st.end_date < st.start_date) st.start_date = st.end_date;
+    }
+    normalizeSubtask(st, t);
+    scheduleSaveState();
+    renderApp();
+  };
+
+  window.deleteSubtaskInline = function(taskId, subId) {
+    const t = (appState.tasks || []).find(x => x.id === taskId);
+    if (!t) return;
+    t.subtasks = (t.subtasks || []).filter(s => s.id !== subId);
+    scheduleSaveState("Removed subtask");
+    renderApp();
+  };
+
+  window.quickAddTask = function() {
+    const titleEl = document.getElementById("quickTaskTitle");
+    const secEl = document.getElementById("quickTaskSec");
+    const ownEl = document.getElementById("quickTaskOwner");
+    const sEl = document.getElementById("quickTaskStart");
+    const eEl = document.getElementById("quickTaskEnd");
+    const title = (titleEl && titleEl.value || "").trim();
+    if (!title) { if (titleEl) titleEl.focus(); return; }
+
+    const startIso = (sEl && sEl.value) || todayIsoStr();
+    const endIso = (eEl && eEl.value && eEl.value >= startIso) ? eEl.value : addDaysIso(startIso, 4);
+    const newTask = normalizeTask({
+      id: "tsk_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6),
+      section_id: (secEl && secEl.value) || appState.sections[0].id,
+      title,
+      owner: (ownEl && ownEl.value) || appState.team_members[0].id,
+      status: "Todo",
+      priority: 4,
+      progress_pct: 0,
+      start_date: startIso,
+      end_date: endIso,
+      starred: false,
+      deliverable: "",
+      links: [],
+      subtasks: []
+    });
+    appState.tasks.push(newTask);
+    delete ui.collapsedSections[newTask.section_id];
+    scheduleSaveState("Added task");
+    renderApp();
+  };
+
+  window.onKanbanDragStart = function(taskId) { ui.draggingKanbanTaskId = taskId; };
+  window.onKanbanDrop = function(newStatus) {
+    if (!ui.draggingKanbanTaskId) return;
+    window.setTaskStatus(ui.draggingKanbanTaskId, newStatus);
+    ui.draggingKanbanTaskId = null;
+  };
+
+  // --- Slide-Over Task Record Drawer ---
+  window.openTaskDrawer = function(taskId, defaultSecId) {
+    const members = appState.team_members || [];
+    const sections = appState.sections || [];
+    let t = taskId ? (appState.tasks || []).find(x => x.id === taskId) : null;
+    const isNew = !t;
+    if (!t) {
+      const sIso = todayIsoStr();
+      t = normalizeTask({
+        id: "tsk_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 6),
+        section_id: defaultSecId || (ui.phaseFilter !== "ALL" ? ui.phaseFilter : sections[0].id),
+        title: "",
+        owner: members[0].id,
+        status: "Todo",
+        priority: 4,
+        progress_pct: 0,
+        start_date: sIso,
+        end_date: addDaysIso(sIso, 5),
+        starred: false,
+        deliverable: "",
+        links: [],
+        subtasks: []
+      });
+      t._isDraftNew = true;
+      window._draftDrawerTask = t;
+    } else {
+      window._draftDrawerTask = null;
+    }
+    ui.activeDrawerTaskId = t.id;
+    renderTaskDrawerContent(t, isNew);
+    document.getElementById("taskDrawerBackdrop").classList.add("open");
+  };
+
+  function getDrawerTargetTask() {
+    if (window._draftDrawerTask && window._draftDrawerTask.id === ui.activeDrawerTaskId) {
+      return window._draftDrawerTask;
+    }
+    return (appState.tasks || []).find(x => x.id === ui.activeDrawerTaskId) || null;
+  }
+
+  function renderTaskDrawerContent(t, isNew) {
+    const m = computeTaskMetrics(t, todayIsoStr());
+    const members = appState.team_members || [];
+    const sections = appState.sections || [];
+    const box = document.getElementById("taskDrawerContent");
+    if (!box) return;
+
+    box.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid var(--muni-border); padding-bottom:12px;">
+        <div>
+          <div class="eyebrow" style="margin-bottom:2px;">${isNew ? "CREATE MUNILM LAUNCH TASK" : "EDIT MUNILM LAUNCH TASK"}</div>
+          <div style="font-size:12px; color:var(--muni-muted);" class="mono-num">${esc(t.start_date)} &rarr; ${esc(t.end_date)} &bull; ${m.pct}% complete</div>
+        </div>
+        <button type="button" class="pill-btn" onclick="window.closeTaskDrawer()">&#10005; Close</button>
+      </div>
+
+      <div>
+        <label class="field-lbl">Task Name</label>
+        <input id="drwTitle" type="text" class="inp" style="width:100%; font-size:14.5px; font-weight:700;"
+               placeholder="e.g., Lock Tier-1 warm intro wave..."
+               value="${escAttr(t.title)}" />
+      </div>
+
+      <div style="display:grid; grid-template-columns:1.3fr 1fr; gap:10px;">
+        <div>
+          <label class="field-lbl">Phase / Section</label>
+          <select id="drwSection" class="sel" style="width:100%;">
+            ${sections.map(s => `<option value="${escAttr(s.id)}" ${s.id === t.section_id ? "selected" : ""}>${esc(s.title)}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label class="field-lbl">Team Member</label>
+          <select id="drwOwner" class="sel" style="width:100%;">
+            ${members.map(mem => `<option value="${escAttr(mem.id)}" ${mem.id === t.owner ? "selected" : ""}>${esc(mem.full_name)}</option>`).join("")}
+          </select>
+        </div>
+      </div>
+
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+        <div>
+          <label class="field-lbl">Status</label>
+          <select id="drwStatus" class="sel" style="width:100%;">
+            ${STATUS_LIST.map(st => `<option value="${st}" ${st === t.status ? "selected" : ""}>${st}</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label class="field-lbl">Priority (1-5)</label>
+          <select id="drwPriority" class="sel" style="width:100%;">
+            ${[5, 4, 3, 2, 1].map(p => `<option value="${p}" ${p === t.priority ? "selected" : ""}>${"★".repeat(p)} (${p}/5)</option>`).join("")}
+          </select>
+        </div>
+        <div>
+          <label class="field-lbl">% Complete (<span id="drwPctLbl">${m.pct}%</span>)</label>
+          <input id="drwPct" type="range" min="0" max="100" step="5" value="${m.pct}"
+                 style="width:100%; margin-top:8px; accent-color:var(--muni-orange);"
+                 oninput="document.getElementById('drwPctLbl').textContent=this.value+'%'" />
+        </div>
+      </div>
+
+      <div style="background:#F8FAFC; border:1px solid var(--muni-border); border-radius:14px; padding:12px 14px;">
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:10px;">
+          <div>
+            <label class="field-lbl">Start Date</label>
+            <input id="drwStart" type="date" class="inp mono-num" style="width:100%;" value="${escAttr(t.start_date)}" />
+          </div>
+          <div>
+            <label class="field-lbl">End Date / Deadline</label>
+            <input id="drwEnd" type="date" class="inp mono-num" style="width:100%;" value="${escAttr(t.end_date)}" />
+          </div>
+        </div>
+        <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:6px;">
+          <span style="font-size:11px; font-weight:700; color:var(--muni-muted);">Quick Shift Schedule:</span>
+          <div style="display:flex; gap:5px;">
+            <button type="button" class="filter-pill" onclick="window.shiftDrawerDates(-7)">-1W</button>
+            <button type="button" class="filter-pill" onclick="window.shiftDrawerDates(-1)">-1D</button>
+            <button type="button" class="filter-pill" onclick="window.shiftDrawerDates(1)">+1D</button>
+            <button type="button" class="filter-pill" onclick="window.shiftDrawerDates(3)">+3D</button>
+            <button type="button" class="filter-pill" onclick="window.shiftDrawerDates(7)">+1W</button>
+          </div>
+        </div>
+      </div>
+
+      <div>
+        <label class="field-lbl">Key Deliverable &amp; Execution Notes</label>
+        <textarea id="drwDeliverable" class="inp" rows="3" style="width:100%; resize:vertical; line-height:1.45;"
+                  placeholder="Concrete exit criteria, Data Room path, or meeting target...">${esc(t.deliverable || "")}</textarea>
+      </div>
+
+      <div style="border-top:1px solid var(--muni-border); padding-top:12px;">
+        <label class="field-lbl">Connected Subtasks (${(t.subtasks || []).length})</label>
+        <div style="display:flex; flex-direction:column; gap:6px; margin-bottom:10px;">
+          ${(t.subtasks || []).map(st => {
+            normalizeSubtask(st, t);
+            return `
+              <div style="display:grid; grid-template-columns:auto 1fr 72px 58px 104px 104px auto; gap:5px; align-items:center; background:#F8FAFC; padding:6px 8px; border-radius:9px;">
+                <input type="checkbox" ${st.progress_pct >= 100 ? "checked" : ""} onchange="window.editDrawerSubtask('${escJs(st.id)}', 'done', this.checked)" />
+                <input type="text" class="inp" style="padding:4px 7px; font-size:11.5px;" value="${escAttr(st.title)}" onchange="window.editDrawerSubtask('${escJs(st.id)}', 'title', this.value)" />
+                <select class="sel" style="padding:4px 5px; font-size:11px;" onchange="window.editDrawerSubtask('${escJs(st.id)}', 'owner', this.value)">
+                  ${members.map(mem => `<option value="${escAttr(mem.id)}" ${mem.id === (st.owner || t.owner) ? "selected" : ""}>${esc(mem.name)}</option>`).join("")}
+                </select>
+                <div style="display:flex; align-items:center; gap:2px;">
+                  <input type="number" min="0" max="100" class="inp mono-num" style="padding:4px 4px; font-size:10.5px; width:44px; text-align:right;" value="${st.progress_pct}" onchange="window.editDrawerSubtask('${escJs(st.id)}', 'progress_pct', this.value)" />
+                  <span style="font-size:10px; color:var(--muni-muted);">%</span>
+                </div>
+                <input type="date" class="inp mono-num" style="padding:3px 4px; font-size:10px;" value="${escAttr(st.start_date || t.start_date)}" onchange="window.editDrawerSubtask('${escJs(st.id)}', 'start_date', this.value)" />
+                <input type="date" class="inp mono-num" style="padding:3px 4px; font-size:10px;" value="${escAttr(st.end_date || t.end_date)}" onchange="window.editDrawerSubtask('${escJs(st.id)}', 'end_date', this.value)" />
+                <button type="button" onclick="window.deleteDrawerSubtask('${escJs(st.id)}')" style="border:none; background:transparent; color:var(--fail-red); cursor:pointer; font-weight:800; padding:0 4px;">&#10005;</button>
+              </div>
+            `;
+          }).join("")}
+        </div>
+        <div style="display:flex; gap:6px;">
+          <input id="drawerNewSubTitle" type="text" class="inp" style="flex:1;" placeholder="+ Add subtask title &amp; Enter..."
+                 onkeydown="if(event.key==='Enter'){ event.preventDefault(); window.addDrawerSubtask(); }" />
+          <button type="button" class="pill-btn" onclick="window.addDrawerSubtask()">+ Subtask</button>
+        </div>
+      </div>
+
+      <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; padding-top:14px; border-top:1px solid var(--muni-border); margin-top:auto;">
+        <div style="display:flex; gap:8px;">
+          ${!isNew ? `
+            <button type="button" class="pill-btn" onclick="window.duplicateDrawerTask()">Duplicate</button>
+            <button type="button" class="pill-btn" style="color:var(--fail-red); border-color:#FECACA;" onclick="window.deleteDrawerTask()">Delete</button>
+          ` : ""}
+        </div>
+        <button type="button" class="pill-btn pill-btn-orange" style="padding:9px 20px;" onclick="window.saveTaskDrawer()">Save Task &rarr;</button>
+      </div>
+    `;
+  }
+
+  function syncDrawerInputsIntoTask(t) {
+    const titleVal = (document.getElementById("drwTitle")?.value || "").trim();
+    if (titleVal) t.title = titleVal;
+    t.section_id = document.getElementById("drwSection")?.value || t.section_id;
+    t.owner = document.getElementById("drwOwner")?.value || t.owner;
+    t.status = document.getElementById("drwStatus")?.value || t.status;
+    t.priority = parseInt(document.getElementById("drwPriority")?.value || "4", 10);
+    t.progress_pct = parseInt(document.getElementById("drwPct")?.value || "0", 10);
+    t.start_date = document.getElementById("drwStart")?.value || t.start_date;
+    t.end_date = document.getElementById("drwEnd")?.value || t.start_date;
+    if (t.end_date < t.start_date) t.end_date = t.start_date;
+    t.deliverable = document.getElementById("drwDeliverable")?.value || "";
+    if (t.status === "Done") t.progress_pct = 100;
+    normalizeTask(t);
+  }
+
+  window.shiftDrawerDates = function(delta) {
+    const sEl = document.getElementById("drwStart");
+    const eEl = document.getElementById("drwEnd");
+    if (sEl) sEl.value = addDaysIso(sEl.value, delta);
+    if (eEl) eEl.value = addDaysIso(eEl.value, delta);
+  };
+
+  window.addDrawerSubtask = function() {
+    const t = getDrawerTargetTask();
+    if (!t) return;
+    syncDrawerInputsIntoTask(t);
+    const inp = document.getElementById("drawerNewSubTitle");
+    const subTitle = (inp?.value || "").trim();
+    if (!subTitle) { if (inp) inp.focus(); return; }
+    t.subtasks.push(normalizeSubtask({
+      id: "sub_" + Date.now().toString(36) + "_" + Math.random().toString(36).slice(2, 5),
+      title: subTitle,
+      owner: t.owner,
+      start_date: t.start_date,
+      end_date: t.end_date,
+      progress_pct: 0,
+      done: false
+    }, t));
+    renderTaskDrawerContent(t, Boolean(t._isDraftNew));
+  };
+
+  window.editDrawerSubtask = function(subId, field, val) {
+    const t = getDrawerTargetTask();
+    if (!t) return;
+    syncDrawerInputsIntoTask(t);
+    const st = (t.subtasks || []).find(s => s.id === subId);
+    if (!st) return;
+    if (field === "done") {
+      st.progress_pct = val ? 100 : 0;
+      st.done = Boolean(val);
+    } else if (field === "progress_pct") {
+      st.progress_pct = Math.max(0, Math.min(100, Math.round(Number(val) || 0)));
+      st.done = st.progress_pct >= 100;
+    } else {
+      st[field] = val;
+    }
+    normalizeSubtask(st, t);
+    renderTaskDrawerContent(t, Boolean(t._isDraftNew));
+  };
+
+  window.deleteDrawerSubtask = function(subId) {
+    const t = getDrawerTargetTask();
+    if (!t) return;
+    syncDrawerInputsIntoTask(t);
+    t.subtasks = (t.subtasks || []).filter(s => s.id !== subId);
+    renderTaskDrawerContent(t, Boolean(t._isDraftNew));
+  };
+
+  window.saveTaskDrawer = function() {
+    const t = getDrawerTargetTask();
+    if (!t) return;
+    const rawTitle = (document.getElementById("drwTitle")?.value || "").trim();
+    if (!rawTitle) {
+      document.getElementById("drwTitle")?.focus();
+      return;
+    }
+    syncDrawerInputsIntoTask(t);
+    if (t._isDraftNew) {
+      delete t._isDraftNew;
+      appState.tasks.push(t);
+      window._draftDrawerTask = null;
+    }
+    window.closeTaskDrawer();
+    scheduleSaveState("Saved task");
+    renderApp();
+  };
+
+  window.duplicateDrawerTask = function() {
+    const t = getDrawerTargetTask();
+    if (!t || t._isDraftNew) return;
+    syncDrawerInputsIntoTask(t);
+    const copy = deepClone(t);
+    copy.id = "tsk_" + Date.now().toString(36) + "_cp";
+    copy.title = t.title + " (Copy)";
+    copy.subtasks = (copy.subtasks || []).map((s, i) => ({ ...s, id: copy.id + "_s" + i }));
+    appState.tasks.push(copy);
+    window.closeTaskDrawer();
+    scheduleSaveState("Duplicated task");
+    renderApp();
+  };
+
+  window.deleteDrawerTask = function() {
+    const t = getDrawerTargetTask();
+    if (!t || t._isDraftNew) return;
+    appState.tasks = (appState.tasks || []).filter(x => x.id !== t.id);
+    window.closeTaskDrawer();
+    scheduleSaveState("Deleted task");
+    renderApp();
+  };
+
+  window.closeTaskDrawer = function() {
+    document.getElementById("taskDrawerBackdrop").classList.remove("open");
+    ui.activeDrawerTaskId = null;
+    window._draftDrawerTask = null;
+  };
+
+  // --- Phase / Section Customizer Modal ---
+  window.openPhaseModal = function() {
+    renderPhaseModal();
+    document.getElementById("phaseModalBackdrop").classList.add("open");
+  };
+  window.closePhaseModal = function() {
+    document.getElementById("phaseModalBackdrop").classList.remove("open");
+    renderApp();
+  };
+
+  function renderPhaseModal() {
+    const box = document.getElementById("phaseModalContent");
+    if (!box) return;
+    const secs = appState.sections || [];
+    box.innerHTML = `
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; padding-bottom:10px; border-bottom:1px solid var(--muni-border);">
+        <div>
+          <div class="eyebrow">CUSTOMIZE MUNILM LAUNCH SECTIONS</div>
+          <h3 style="font-size:19px; font-weight:800;">Launch &amp; Roadshow Phases</h3>
+        </div>
+        <button type="button" class="pill-btn" onclick="window.closePhaseModal()">Done</button>
+      </div>
+      <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
+        ${secs.map((s, idx) => {
+          const cnt = (appState.tasks || []).filter(t => t.section_id === s.id).length;
+          return `
+            <div style="display:grid; grid-template-columns:86px 1fr 44px auto auto auto; gap:7px; align-items:center; background:#F8FAFC; padding:8px 10px; border-radius:10px; border:1px solid var(--muni-border);">
+              <input type="text" class="inp" style="padding:5px 7px; font-size:11.5px; font-weight:800;" value="${escAttr(s.code)}"
+                     onchange="window.editPhaseField('${escJs(s.id)}', 'code', this.value)" />
+              <input type="text" class="inp" style="padding:5px 8px; font-size:12.5px; font-weight:700;" value="${escAttr(s.title)}"
+                     onchange="window.editPhaseField('${escJs(s.id)}', 'title', this.value)" />
+              <input type="color" value="${escAttr(s.color || "#F05332")}" style="width:36px; height:30px; border:none; background:transparent; cursor:pointer;"
+                     onchange="window.editPhaseField('${escJs(s.id)}', 'color', this.value)" />
+              <button type="button" class="filter-pill" ${idx === 0 ? "disabled" : ""} onclick="window.movePhase(${idx}, -1)">&uarr;</button>
+              <button type="button" class="filter-pill" ${idx === secs.length - 1 ? "disabled" : ""} onclick="window.movePhase(${idx}, 1)">&darr;</button>
+              <button type="button" class="filter-pill" style="color:var(--fail-red);" ${secs.length <= 1 ? "disabled" : ""}
+                      title="${cnt ? `Moves ${cnt} task(s) into first remaining phase` : "Delete phase"}"
+                      onclick="window.deletePhase('${escJs(s.id)}')">&#10005;</button>
+            </div>
+          `;
+        }).join("")}
+      </div>
+      <div style="display:flex; gap:8px;">
+        <input id="newPhaseTitle" type="text" class="inp" style="flex:1;" placeholder="New phase title (e.g., Phase 6: Post-Close Hiring &amp; GTM)..." />
+        <button type="button" class="pill-btn pill-btn-orange" onclick="window.addPhase()">+ Add Phase</button>
+      </div>
+    `;
+  }
+
+  window.editPhaseField = function(secId, field, val) {
+    const s = (appState.sections || []).find(x => x.id === secId);
+    if (!s) return;
+    s[field] = val;
+    if (field === "color") s.bg = val + "22";
+    scheduleSaveState("Updated phase");
+  };
+
+  window.movePhase = function(idx, dir) {
+    const secs = appState.sections;
+    const tgt = idx + dir;
+    if (tgt < 0 || tgt >= secs.length) return;
+    const tmp = secs[idx];
+    secs[idx] = secs[tgt];
+    secs[tgt] = tmp;
+    scheduleSaveState("Reordered phases");
+    renderPhaseModal();
+  };
+
+  window.addPhase = function() {
+    const inp = document.getElementById("newPhaseTitle");
+    const title = (inp?.value || "").trim();
+    if (!title) { if (inp) inp.focus(); return; }
+    const n = (appState.sections || []).length + 1;
+    appState.sections.push({
+      id: "sec_" + Date.now().toString(36),
+      code: `PHASE ${n}`,
+      title,
+      subtitle: "",
+      color: "#0F766E",
+      bg: "#CCFBF1"
+    });
+    scheduleSaveState("Added phase");
+    renderPhaseModal();
+  };
+
+  window.deletePhase = function(secId) {
+    if ((appState.sections || []).length <= 1) return;
+    appState.sections = appState.sections.filter(s => s.id !== secId);
+    const fallbackId = appState.sections[0].id;
+    for (const t of (appState.tasks || [])) {
+      if (t.section_id === secId) t.section_id = fallbackId;
+    }
+    if (ui.phaseFilter === secId) ui.phaseFilter = "ALL";
+    scheduleSaveState("Removed phase");
+    renderPhaseModal();
+  };
+
+  window.resetToBaseline = function() {
+    if (!confirm("Reset local browser edits back to the compiled MuniLM Launch baseline? (Tip: Export JSON or Excel first if you want a backup.)")) return;
+    localStorage.removeItem(LOCAL_STATE_ENC_KEY);
+    appState = deepClone(baselineState);
+    renderApp();
+    showToast("Reset to compiled MuniLM baseline");
+  };
+
+  // --- Zero-Dependency Native OpenXML (.xlsx) Builder + JSON/XLSX Sync ---
+  const CRC_TABLE = (function() {
+    const tbl = new Uint32Array(256);
+    for (let n = 0; n < 256; n++) {
+      let c = n;
+      for (let k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1);
+      tbl[n] = c >>> 0;
+    }
+    return tbl;
+  })();
+
+  function crc32Bytes(u8) {
+    let crc = 0 ^ (-1);
+    for (let i = 0; i < u8.length; i++) crc = (crc >>> 8) ^ CRC_TABLE[(crc ^ u8[i]) & 0xFF];
+    return (crc ^ (-1)) >>> 0;
+  }
+
+  function buildStoredZip(files) {
+    const enc = new TextEncoder();
+    const localParts = [];
+    const centralParts = [];
+    let offset = 0;
+
+    for (const f of files) {
+      const nameBytes = enc.encode(f.name);
+      const dataBytes = f.data instanceof Uint8Array ? f.data : enc.encode(f.data);
+      const crc = crc32Bytes(dataBytes);
+      const sz = dataBytes.length;
+
+      const lh = new Uint8Array(30 + nameBytes.length);
+      const lv = new DataView(lh.buffer);
+      lv.setUint32(0, 0x04034B50, true);
+      lv.setUint16(4, 20, true);
+      lv.setUint16(6, 0x0800, true);
+      lv.setUint16(8, 0, true);
+      lv.setUint16(10, 0, true);
+      lv.setUint16(12, 0x5778, true);
+      lv.setUint32(14, crc, true);
+      lv.setUint32(18, sz, true);
+      lv.setUint32(22, sz, true);
+      lv.setUint16(26, nameBytes.length, true);
+      lv.setUint16(28, 0, true);
+      lh.set(nameBytes, 30);
+
+      localParts.push(lh, dataBytes);
+
+      const ch = new Uint8Array(46 + nameBytes.length);
+      const cv = new DataView(ch.buffer);
+      cv.setUint32(0, 0x02014B50, true);
+      cv.setUint16(4, 20, true);
+      cv.setUint16(6, 20, true);
+      cv.setUint16(8, 0x0800, true);
+      cv.setUint16(10, 0, true);
+      cv.setUint16(12, 0, true);
+      cv.setUint16(14, 0x5778, true);
+      cv.setUint32(16, crc, true);
+      cv.setUint32(20, sz, true);
+      cv.setUint32(24, sz, true);
+      cv.setUint16(28, nameBytes.length, true);
+      cv.setUint16(30, 0, true);
+      cv.setUint16(32, 0, true);
+      cv.setUint16(34, 0, true);
+      cv.setUint16(36, 0, true);
+      cv.setUint32(38, 0, true);
+      cv.setUint32(42, offset, true);
+      ch.set(nameBytes, 46);
+      centralParts.push(ch);
+
+      offset += lh.length + sz;
+    }
+
+    const centralSize = centralParts.reduce((s, p) => s + p.length, 0);
+    const eocd = new Uint8Array(22);
+    const ev = new DataView(eocd.buffer);
+    ev.setUint32(0, 0x06054B50, true);
+    ev.setUint16(4, 0, true);
+    ev.setUint16(6, 0, true);
+    ev.setUint16(8, files.length, true);
+    ev.setUint16(10, files.length, true);
+    ev.setUint32(12, centralSize, true);
+    ev.setUint32(16, offset, true);
+    ev.setUint16(20, 0, true);
+
+    const totalLen = offset + centralSize + 22;
+    const out = new Uint8Array(totalLen);
+    let pos = 0;
+    for (const p of localParts) { out.set(p, pos); pos += p.length; }
+    for (const p of centralParts) { out.set(p, pos); pos += p.length; }
+    out.set(eocd, pos);
+    return out;
+  }
+
+  function colLetter(colIdx1) {
+    let n = colIdx1;
+    let s = "";
+    while (n > 0) {
+      const m = (n - 1) % 26;
+      s = String.fromCharCode(65 + m) + s;
+      n = Math.floor((n - 1) / 26);
+    }
+    return s;
+  }
+
+  function xmlEsc(str) {
+    return String(str == null ? "" : str)
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+
+  function isoToExcelSerial(iso) {
+    const p = parseIsoDate(iso);
+    if (!p) return null;
+    const utcMs = Date.UTC(p.getFullYear(), p.getMonth(), p.getDate());
+    const epochMs = Date.UTC(1899, 11, 30);
+    return Math.round((utcMs - epochMs) / 86400000);
+  }
+
+  function excelSerialToIso(serial) {
+    const n = Number(serial);
+    if (!Number.isFinite(n) || n < 20000 || n > 80000) return "";
+    const dt = new Date(Date.UTC(1899, 11, 30) + Math.round(n) * 86400000);
+    return dt.toISOString().slice(0, 10);
+  }
+
+  function generateMuniLmXlsxBytes() {
+    const todayIso = todayIsoStr();
+    const allTasks = appState.tasks || [];
+    let minIso = todayIso;
+    let maxIso = addDaysIso(todayIso, 42);
+    if (allTasks.length) {
+      minIso = allTasks.reduce((a, t) => (t.start_date < a ? t.start_date : a), allTasks[0].start_date);
+      maxIso = allTasks.reduce((a, t) => (t.end_date > a ? t.end_date : a), allTasks[0].end_date);
+    }
+    const weekStarts = [];
+    let curW = parseIsoDate(minIso);
+    const maxDt = parseIsoDate(maxIso);
+    while (curW <= maxDt && weekStarts.length < 18) {
+      weekStarts.push(formatIsoDate(curW));
+      curW.setDate(curW.getDate() + 7);
+    }
+
+    const rowsXml = [];
+    const headers = [
+      "PHASE / SECTION",
+      "TASK / SUBTASK NAME",
+      "START DATE",
+      "END DATE",
+      "DURATION (WORK DAYS)",
+      "TEAM MEMBER",
+      "PERCENT COMPLETE",
+      "STATUS",
+      "DELIVERABLE / NOTES"
+    ];
+    weekStarts.forEach((ws, i) => headers.push(`WEEK ${i + 1} (${ws.slice(5)})`));
+
+    const hdrCells = headers.map((h, idx) => {
+      const ref = `${colLetter(idx + 1)}1`;
+      return `<c r="${ref}" s="1" t="inlineStr"><is><t>${xmlEsc(h)}</t></is></c>`;
+    }).join("");
+    rowsXml.push(`<row r="1" ht="24" customHeight="1">${hdrCells}</row>`);
+
+    let rNum = 2;
+    const emitRow = (codeLabel, nameStr, sIso, eIso, memName, pctVal, statusStr, notesStr) => {
+      const sSerial = isoToExcelSerial(sIso);
+      const eSerial = isoToExcelSerial(eIso);
+      const wDays = countWorkDays(sIso, eIso);
+      const pctFrac = +(pctVal / 100).toFixed(4);
+      const cells = [
+        `<c r="A${rNum}" t="inlineStr"><is><t>${xmlEsc(codeLabel)}</t></is></c>`,
+        `<c r="B${rNum}" t="inlineStr"><is><t>${xmlEsc(nameStr)}</t></is></c>`,
+        sSerial ? `<c r="C${rNum}" s="3"><v>${sSerial}</v></c>` : "",
+        eSerial ? `<c r="D${rNum}" s="3"><v>${eSerial}</v></c>` : "",
+        `<c r="E${rNum}" s="5"><f>IF(OR(C${rNum}="",D${rNum}=""),"",NETWORKDAYS(C${rNum},D${rNum}))</f><v>${wDays}</v></c>`,
+        `<c r="F${rNum}" t="inlineStr"><is><t>${xmlEsc(memName)}</t></is></c>`,
+        `<c r="G${rNum}" s="4"><v>${pctFrac}</v></c>`,
+        `<c r="H${rNum}" t="inlineStr"><is><t>${xmlEsc(statusStr)}</t></is></c>`,
+        `<c r="I${rNum}" t="inlineStr"><is><t>${xmlEsc(notesStr || "")}</t></is></c>`
+      ];
+      weekStarts.forEach((ws, wIdx) => {
+        const we = addDaysIso(ws, 6);
+        if (sIso <= we && eIso >= ws) {
+          const colRef = `${colLetter(10 + wIdx)}${rNum}`;
+          cells.push(`<c r="${colRef}" s="6" t="inlineStr"><is><t>${pctVal}%</t></is></c>`);
+        }
+      });
+      rowsXml.push(`<row r="${rNum}" ht="19" customHeight="1">${cells.join("")}</row>`);
+      rNum++;
+    };
+
+    for (const sec of (appState.sections || [])) {
+      const secTasks = allTasks.filter(t => t.section_id === sec.id);
+      rowsXml.push(
+        `<row r="${rNum}" ht="21" customHeight="1">` +
+        `<c r="A${rNum}" s="2" t="inlineStr"><is><t>${xmlEsc(sec.title)}</t></is></c>` +
+        `</row>`
+      );
+      rNum++;
+
+      for (const t of secTasks) {
+        const m = computeTaskMetrics(t, todayIso);
+        const mem = getMember(t.owner);
+        emitRow(sec.code, t.title, t.start_date, t.end_date, mem.name, m.pct, t.status, t.deliverable || "");
+        for (const st of (t.subtasks || [])) {
+          normalizeSubtask(st, t);
+          const sMem = getMember(st.owner || t.owner);
+          const stStatus = st.progress_pct >= 100 ? "Done" : (st.progress_pct > 0 ? "Doing" : "Todo");
+          emitRow("SUBTASK", "  ↳ " + st.title, st.start_date, st.end_date, sMem.name, st.progress_pct, stStatus, "");
+        }
+      }
+    }
+
+    const sheetXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <cols>
+    <col min="1" max="1" width="16" customWidth="1"/>
+    <col min="2" max="2" width="52" customWidth="1"/>
+    <col min="3" max="4" width="13" customWidth="1"/>
+    <col min="5" max="5" width="16" customWidth="1"/>
+    <col min="6" max="6" width="14" customWidth="1"/>
+    <col min="7" max="7" width="16" customWidth="1"/>
+    <col min="8" max="8" width="12" customWidth="1"/>
+    <col min="9" max="9" width="44" customWidth="1"/>
+    <col min="10" max="${9 + Math.max(1, weekStarts.length)}" width="13" customWidth="1"/>
+  </cols>
+  <sheetData>${rowsXml.join("")}</sheetData>
+</worksheet>`;
+
+    const stylesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<styleSheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main">
+  <numFmts count="2">
+    <numFmt numFmtId="164" formatCode="yyyy-mm-dd"/>
+    <numFmt numFmtId="165" formatCode="0"/>
+  </numFmts>
+  <fonts count="4">
+    <font><sz val="10"/><name val="Calibri"/></font>
+    <font><b/><sz val="10"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+    <font><b/><sz val="11"/><color rgb="FFF05332"/><name val="Calibri"/></font>
+    <font><b/><sz val="9"/><color rgb="FFFFFFFF"/><name val="Calibri"/></font>
+  </fonts>
+  <fills count="5">
+    <fill><patternFill patternType="none"/></fill>
+    <fill><patternFill patternType="gray125"/></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FF141519"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFFFF3EE"/></patternFill></fill>
+    <fill><patternFill patternType="solid"><fgColor rgb="FFF05332"/></patternFill></fill>
+  </fills>
+  <borders count="1"><border><left/><right/><top/><bottom/><diagonal/></border></borders>
+  <cellStyleXfs count="1"><xf numFmtId="0" fontId="0" fillId="0" borderId="0"/></cellStyleXfs>
+  <cellXfs count="7">
+    <xf numFmtId="0" fontId="0" fillId="0" borderId="0" xfId="0"/>
+    <xf numFmtId="0" fontId="1" fillId="2" borderId="0" xfId="0" applyFont="1" applyFill="1"/>
+    <xf numFmtId="0" fontId="2" fillId="3" borderId="0" xfId="0" applyFont="1" applyFill="1"/>
+    <xf numFmtId="164" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>
+    <xf numFmtId="9" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>
+    <xf numFmtId="165" fontId="0" fillId="0" borderId="0" xfId="0" applyNumberFormat="1"/>
+    <xf numFmtId="0" fontId="3" fillId="4" borderId="0" xfId="0" applyFont="1" applyFill="1"/>
+  </cellXfs>
+  <cellStyles count="1"><cellStyle name="Normal" xfId="0" builtinId="0"/></cellStyles>
+</styleSheet>`;
+
+    const workbookXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<workbook xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"
+          xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships">
+  <sheets>
+    <sheet name="MuniLM Launch Gantt" sheetId="1" r:id="rId1"/>
+  </sheets>
+</workbook>`;
+
+    const wbRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/worksheet" Target="worksheets/sheet1.xml"/>
+  <Relationship Id="rId2" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/>
+</Relationships>`;
+
+    const rootRelsXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">
+  <Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="xl/workbook.xml"/>
+</Relationships>`;
+
+    const contentTypesXml = `<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types">
+  <Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/>
+  <Default Extension="xml" ContentType="application/xml"/>
+  <Override PartName="/xl/workbook.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet.main+xml"/>
+  <Override PartName="/xl/worksheets/sheet1.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.worksheet+xml"/>
+  <Override PartName="/xl/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.spreadsheetml.styles+xml"/>
+</Types>`;
+
+    return buildStoredZip([
+      { name: "[Content_Types].xml", data: contentTypesXml },
+      { name: "_rels/.rels", data: rootRelsXml },
+      { name: "xl/workbook.xml", data: workbookXml },
+      { name: "xl/_rels/workbook.xml.rels", data: wbRelsXml },
+      { name: "xl/styles.xml", data: stylesXml },
+      { name: "xl/worksheets/sheet1.xml", data: sheetXml }
+    ]);
+  }
+
+  function triggerDownload(bytesOrStr, filename, mime) {
+    const blob = new Blob([bytesOrStr], { type: mime });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1500);
+  }
+
+  window.exportLaunchXlsx = function() {
+    const bytes = generateMuniLmXlsxBytes();
+    triggerDownload(
+      bytes,
+      `MuniLM_Launch_Roadshow_${todayIsoStr()}.xlsx`,
+      "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+    );
+    showToast("Exported MuniLM Launch Excel (.xlsx)");
+  };
+
+  window.exportLaunchJson = function() {
+    const json = JSON.stringify(appState, null, 2);
+    triggerDownload(json, `MuniLM_Launch_Snapshot_${todayIsoStr()}.json`, "application/json");
+    showToast("Exported MuniLM Launch JSON snapshot");
+  };
+
+  // --- ZIP / XLSX Reader for Round-Trip Import ---
+  async function extractZipEntries(arrayBuf) {
+    const u8 = new Uint8Array(arrayBuf);
+    const dv = new DataView(arrayBuf);
+    let eocdPos = -1;
+    for (let i = u8.length - 22; i >= Math.max(0, u8.length - 65557); i--) {
+      if (dv.getUint32(i, true) === 0x06054B50) { eocdPos = i; break; }
+    }
+    if (eocdPos < 0) throw new Error("Invalid .xlsx archive");
+    const totalEntries = dv.getUint16(eocdPos + 10, true);
+    const cdOffset = dv.getUint32(eocdPos + 16, true);
+    const dec = new TextDecoder("utf-8");
+    const entries = {};
+    let ptr = cdOffset;
+
+    for (let e = 0; e < totalEntries; e++) {
+      if (dv.getUint32(ptr, true) !== 0x02014B50) break;
+      const method = dv.getUint16(ptr + 10, true);
+      const compSize = dv.getUint32(ptr + 20, true);
+      const nameLen = dv.getUint16(ptr + 28, true);
+      const extraLen = dv.getUint16(ptr + 30, true);
+      const commentLen = dv.getUint16(ptr + 32, true);
+      const localOff = dv.getUint32(ptr + 42, true);
+      const name = dec.decode(u8.subarray(ptr + 46, ptr + 46 + nameLen));
+      ptr += 46 + nameLen + extraLen + commentLen;
+
+      const lNameLen = dv.getUint16(localOff + 26, true);
+      const lExtraLen = dv.getUint16(localOff + 28, true);
+      const dataStart = localOff + 30 + lNameLen + lExtraLen;
+      const slice = u8.subarray(dataStart, dataStart + compSize);
+
+      if (method === 0) {
+        entries[name] = dec.decode(slice);
+      } else if (method === 8 && typeof DecompressionStream !== "undefined") {
+        const ds = new DecompressionStream("deflate-raw");
+        const writer = ds.writable.getWriter();
+        writer.write(slice);
+        writer.close();
+        const ab = await new Response(ds.readable).arrayBuffer();
+        entries[name] = dec.decode(new Uint8Array(ab));
+      }
+    }
+    return entries;
+  }
+
+  async function importFromXlsxBuffer(arrayBuf) {
+    const entries = await extractZipEntries(arrayBuf);
+    const parser = new DOMParser();
+    const sharedStrings = [];
+    if (entries["xl/sharedStrings.xml"]) {
+      const ssDoc = parser.parseFromString(entries["xl/sharedStrings.xml"], "application/xml");
+      ssDoc.querySelectorAll("si").forEach(si => {
+        sharedStrings.push(Array.from(si.querySelectorAll("t")).map(t => t.textContent || "").join(""));
+      });
+    }
+    const sheetXml = entries["xl/worksheets/sheet1.xml"];
+    if (!sheetXml) throw new Error("Missing worksheet in .xlsx");
+    const sDoc = parser.parseFromString(sheetXml, "application/xml");
+
+    const sections = [];
+    const tasks = [];
+    let curSec = null;
+    let lastParentTask = null;
+    const palette = ["#0F766E", "#F05332", "#2563EB", "#7C3AED", "#BE185D"];
+    const members = appState.team_members || [];
+
+    const readCellVal = (cEl) => {
+      const tAttr = cEl.getAttribute("t");
+      if (tAttr === "s") {
+        const idx = parseInt(cEl.querySelector("v")?.textContent || "0", 10);
+        return sharedStrings[idx] || "";
+      }
+      if (tAttr === "inlineStr") {
+        return Array.from(cEl.querySelectorAll("is t")).map(x => x.textContent || "").join("");
+      }
+      return cEl.querySelector("v")?.textContent || "";
+    };
+
+    let headerMap = { endCol: "D", memberCol: "F", pctCol: "G", statusCol: "H", notesCol: "I" };
+    sDoc.querySelectorAll("sheetData row").forEach((rEl, rIdx) => {
+      const map = {};
+      rEl.querySelectorAll("c").forEach(cEl => {
+        const ref = (cEl.getAttribute("r") || "").replace(/\d+/g, "");
+        map[ref] = readCellVal(cEl).trim();
+      });
+      if (rIdx === 0) {
+        if ((map.E || "").toUpperCase().includes("END")) {
+          headerMap = { endCol: "E", memberCol: "I", pctCol: "J", statusCol: "K", notesCol: "L" };
+        }
+        return;
+      }
+      const colA = map.A || "";
+      const colB = map.B || "";
+      if (colA && !colB) {
+        const col = palette[sections.length % palette.length];
+        curSec = {
+          id: "sec_imp_" + (sections.length + 1),
+          code: `PHASE ${sections.length + 1}`,
+          title: colA,
+          subtitle: "",
+          color: col,
+          bg: col + "22"
+        };
+        sections.push(curSec);
+        lastParentTask = null;
+        return;
+      }
+      if (!colB || colB.toUpperCase().includes("TASK")) return;
+      if (!curSec) {
+        curSec = { id: "sec_imp_1", code: "PHASE 1", title: "MuniLM Launch Schedule", subtitle: "", color: "#F05332", bg: "#FFEDD5" };
+        sections.push(curSec);
+      }
+
+      const rawStart = map.C || "";
+      const rawEnd = map[headerMap.endCol] || "";
+      const sIso = /^\d{4}-\d{2}-\d{2}/.test(rawStart) ? rawStart.slice(0, 10) : (excelSerialToIso(rawStart) || todayIsoStr());
+      const eIso = /^\d{4}-\d{2}-\d{2}/.test(rawEnd) ? rawEnd.slice(0, 10) : (excelSerialToIso(rawEnd) || sIso);
+
+      const rawMember = (map[headerMap.memberCol] || "").toLowerCase();
+      const matchedMem = members.find(m => rawMember.includes(m.name.toLowerCase()) || rawMember === m.id) || members[0];
+
+      let rawPct = parseFloat(map[headerMap.pctCol] || "0");
+      if (!Number.isFinite(rawPct)) rawPct = 0;
+      const pct = rawPct <= 1 && rawPct > 0 ? Math.round(rawPct * 100) : Math.round(rawPct);
+
+      const isSub = colA.toUpperCase() === "SUBTASK" || colB.trim().startsWith("↳");
+      if (isSub && lastParentTask) {
+        lastParentTask.subtasks.push(normalizeSubtask({
+          id: "sub_imp_" + Date.now().toString(36) + "_" + lastParentTask.subtasks.length,
+          title: colB.replace(/^\s*↳\s*/, "").trim(),
+          owner: matchedMem ? matchedMem.id : lastParentTask.owner,
+          start_date: sIso,
+          end_date: eIso >= sIso ? eIso : sIso,
+          progress_pct: pct,
+          done: pct >= 100
+        }, lastParentTask));
+        return;
+      }
+
+      const rawStatus = map[headerMap.statusCol] || (pct >= 100 ? "Done" : (pct > 0 ? "Doing" : "Todo"));
+      const parentTask = normalizeTask({
+        id: "tsk_imp_" + (tasks.length + 1),
+        section_id: curSec.id,
+        title: colB,
+        owner: matchedMem ? matchedMem.id : "both",
+        status: STATUS_LIST.includes(rawStatus) ? rawStatus : (pct >= 100 ? "Done" : "Doing"),
+        priority: 4,
+        progress_pct: pct,
+        start_date: sIso,
+        end_date: eIso >= sIso ? eIso : sIso,
+        starred: false,
+        deliverable: map[headerMap.notesCol] || "",
+        links: [],
+        subtasks: []
+      });
+      tasks.push(parentTask);
+      lastParentTask = parentTask;
+    });
+
+    if (!tasks.length) throw new Error("No tasks found in workbook");
+    appState.sections = sections;
+    appState.tasks = tasks;
+  }
+
+  window.handleImportFile = async function(ev) {
+    const file = ev.target.files && ev.target.files[0];
+    ev.target.value = "";
+    if (!file) return;
+    try {
+      if (file.name.toLowerCase().endsWith(".json")) {
+        const txt = await file.text();
+        const obj = JSON.parse(txt);
+        if (!Array.isArray(obj.sections) || !Array.isArray(obj.tasks)) {
+          throw new Error("Invalid MuniLM Launch JSON snapshot");
+        }
+        appState = obj;
+      } else {
+        const ab = await file.arrayBuffer();
+        await importFromXlsxBuffer(ab);
+      }
+      ui.phaseFilter = "ALL";
+      ui.ownerFilter = "ALL";
+      scheduleSaveState("Imported schedule (" + appState.tasks.length + " tasks)");
+      renderApp();
+    } catch (err) {
+      alert("Import error: " + (err && err.message ? err.message : String(err)));
+    }
+  };
+
+  // --- Vault Boot & Unlock Lifecycle ---
+  async function unlockWithKey(passkey, silent) {
+    if (!passkey || !passkey.trim()) return false;
+    try {
+      const rawEnv = JSON.parse(document.getElementById("encryptedBundlePayload").textContent);
+      const base = rawEnv.unencrypted_launch
+        ? rawEnv.unencrypted_launch
+        : await decryptEnvelope(rawEnv, passkey);
+
+      baselineState = deepClone(base);
+      await initSessionEncryptionKey(passkey);
+
+      let loaded = null;
+      const savedRaw = localStorage.getItem(LOCAL_STATE_ENC_KEY);
+      if (savedRaw) {
+        try {
+          const savedEnv = JSON.parse(savedRaw);
+          loaded = savedEnv.unencrypted_local
+            ? savedEnv.unencrypted_local
+            : await decryptEnvelope(savedEnv, passkey);
+        } catch (_ignore) {
+          loaded = null;
+        }
+      }
+      appState = loaded && Array.isArray(loaded.tasks) ? loaded : deepClone(baselineState);
+
+      localStorage.setItem(VAULT_STORAGE_KEY, passkey.trim());
+      setVaultUnlockedHeader(true);
+      document.getElementById("authGate").classList.add("hidden");
+      document.getElementById("launchAppRoot").classList.remove("hidden");
+      renderApp();
+      return true;
+    } catch (_err) {
+      if (!silent) {
+        document.getElementById("authError").textContent = "Invalid MuniLM invite key.";
+      }
+      return false;
+    }
+  }
+
+  function setVaultUnlockedHeader(unlocked) {
+    const badge = document.getElementById("vaultBadge");
+    const btn = document.getElementById("lockVaultBtn");
+    if (unlocked) {
+      badge.textContent = "✓ Vault Unlocked";
+      badge.classList.remove("locked");
+      btn.style.display = "inline-flex";
+    } else {
+      badge.textContent = "Encrypted Launch Vault";
+      badge.classList.add("locked");
+      btn.style.display = "none";
+    }
+  }
+
+  window.lockLaunchVault = function() {
+    localStorage.removeItem(VAULT_STORAGE_KEY);
+    location.reload();
+  };
+
+  (async function boot() {
+    loadUiPrefs();
+    const hm = (window.location.hash || "").match(/(?:^|[&#])key=([^&]+)/);
+    let hk = null;
+    if (hm) {
+      try { hk = decodeURIComponent(hm[1]).trim(); } catch (_e) { hk = String(hm[1] || "").trim(); }
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+    }
+
+    const rawEnv = JSON.parse(document.getElementById("encryptedBundlePayload").textContent);
+    if (rawEnv && rawEnv.unencrypted_launch) {
+      isUnencryptedLocal = true;
+      baselineState = deepClone(rawEnv.unencrypted_launch);
+      let loaded = null;
+      try {
+        const s = JSON.parse(localStorage.getItem(LOCAL_STATE_ENC_KEY) || "null");
+        if (s && s.unencrypted_local) loaded = s.unencrypted_local;
+      } catch (_e) {}
+      appState = loaded && Array.isArray(loaded.tasks) ? loaded : deepClone(baselineState);
+      setVaultUnlockedHeader(true);
+      document.getElementById("authGate").classList.add("hidden");
+      document.getElementById("launchAppRoot").classList.remove("hidden");
+      renderApp();
+      return;
+    }
+
+    if (hk && (await unlockWithKey(hk, false))) return;
+    const savedKey = localStorage.getItem(VAULT_STORAGE_KEY);
+    if (savedKey && (await unlockWithKey(savedKey, true))) return;
+
+    document.getElementById("unlockForm").addEventListener("submit", async function(e) {
+      e.preventDefault();
+      document.getElementById("authError").textContent = "";
+      await unlockWithKey(document.getElementById("unlockInput").value, false);
+    });
+  })();
+})();
+
+  </script>
+</body>
+</html>

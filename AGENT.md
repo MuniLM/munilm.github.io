@@ -41,7 +41,8 @@ Because `MuniLM/munilm.github.io` has **`PUBLIC`** GitHub visibility and `.nojek
 
 External partners, researchers, and investors hold deep links into this domain. Agents MUST preserve backward compatibility across all published routes:
 
-- `/` — Top-level 4-card **MuniLM Prototype Workspace** (`ACFR Extraction` [`Live`], `Official Statement XBRL` [`Offline`], `Internal Data Catalog` [`Offline`], `External Data Catalog` [`Offline`]).
+- `/` — Top-level **MuniLM Prototype Workspace** featuring `MuniLM Launch` (`./launch/`) plus the 4 prototype cards (`ACFR Extraction` [`Live`], `Official Statement XBRL` [`Offline`], `Internal Data Catalog` [`Offline`], `External Data Catalog` [`Offline`]).
+- `/launch/` — Vault-encrypted **MuniLM Launch (Investor Readiness & Roadshow Task Manager)**.
 - `/acfr-extraction/` — **Municipal ACFR-to-XBRL Workstations** sub-page.
 - `/benchmark/` — Vault-encrypted **Executive & Technical Benchmark Report**.
 - `/milwaukee-fy2025/`, `/boston-fy2025/`, `/tampa-fy2025/`, `/denver-water-fy2024/`, `/alpha-park-fy2025/` — Canonical city workstation slugs (do not rename or nest under `/acfr-extraction/` without explicit redirect pages).

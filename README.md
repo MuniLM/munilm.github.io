@@ -18,7 +18,8 @@
 
 | Route | Status | Purpose |
 | :--- | :---: | :--- |
-| **[`/`](https://munilm.github.io/)** | **Live** | **MuniLM Prototype Workspace** — Top-level 4-module hub tracking `ACFR Extraction` (`Live`), `Official Statement XBRL` (`Offline`), `Internal Data Catalog` (`Offline`), and `External Data Catalog` (`Offline`). |
+| **[`/`](https://munilm.github.io/)** | **Live** | **MuniLM Prototype Workspace** — Top-level hub featuring **`MuniLM Launch`** (`Live (Vault)`) above the 4 prototype modules (`ACFR Extraction` [`Live`], `Official Statement XBRL` [`Offline`], `Internal Data Catalog` [`Offline`], `External Data Catalog` [`Offline`]). |
+| **[`/launch/`](https://munilm.github.io/launch/)** | **Live (Vault)** | **MuniLM Launch — Investor Readiness & Roadshow Task Manager** — Collapsible 5-phase & task rollups, inline task/subtask editing, draggable Gantt timelines, Table & Kanban boards, and `.xlsx` / `.json` snapshot sync. |
 | **[`/acfr-extraction/`](https://munilm.github.io/acfr-extraction/)** | **Live** | **Municipal ACFR-to-XBRL Workstations Hub** — Entry hub for US GRIP 2022 & UMich CLOSUP workstations, headline verification strip, and vault unlock bar. |
 | **[`/milwaukee-fy2025/`](https://munilm.github.io/milwaukee-fy2025/)** | **Live (Vault)** | Flagship full-GAAP municipal workstation (*City of Milwaukee, WI — FY2025 ACFR*). |
 | **[`/boston-fy2025/`](https://munilm.github.io/boston-fy2025/)** | **Live (Vault)** | Full-GAAP municipal workstation (*City of Boston, MA — FY2025 ACFR*). |
@@ -91,7 +92,10 @@ munilm.github.io/
 ├── AGENTS.md                         # Standard CLI agent entrypoint pointing to AGENT.md
 ├── auth_config.json                  # Public client auth configuration (SSO disabled when empty)
 ├── demos_manifest.json               # Public card metadata for the 5 showcase cities
-├── index.html                        # Root 4-card MuniLM Prototype Workspace landing page
+├── index.html                        # Root MuniLM Prototype Workspace landing page
+├── launch/
+│   ├── index.html                    # AES-256-GCM encrypted MuniLM Launch Task Manager & Gantt
+│   └── assets/                       # Local Figtree variable font & MuniLM brand marks
 ├── acfr-extraction/
 │   └── index.html                    # Municipal ACFR-to-XBRL Workstations sub-page hub
 ├── benchmark/
